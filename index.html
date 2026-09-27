@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F8F9FC">
+<title>Guía de repaso: Administración de Proyectos de Software</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>:root{color-scheme:light}
+
+:root{
+  --bg:#F8F9FC; --surface:#FFFFFF; --ink:#1B2238; --muted:#5A6378; --line:#E1E5EE;
+  --amber:#F2B705; --amber-ink:#7A5800; --amber-bg:#FFF5D1;
+  --blue:#2B4C9B; --blue-bg:#E9EEFA; --red:#B93A28; --red-bg:#FCECE8;
+  --green:#2F7A4F; --green-bg:#E6F4EC;
+  --radius-l:14px; --radius-s:6px;
+}
+:root{box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px);}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);-webkit-text-size-adjust:100%;scroll-behavior:auto}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:"Bricolage Grotesque",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.15;margin:0}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:4px}
+img,svg{max-width:100%}
+
+/* ---- barra superior: línea de tiempo tipo Gantt ---- */
+.gantt{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 14px 8px}
+.gantt ol{list-style:none;margin:0 auto;padding:0;display:grid;grid-template-columns:1.1fr repeat(5,1fr);gap:5px;max-width:760px}
+.gantt a{display:block;text-decoration:none;color:var(--muted);font-size:12px;font-weight:600;text-align:center}
+.gantt a span{display:block;height:9px;border-radius:5px;border:1.5px solid var(--line);margin-bottom:4px;background:var(--surface)}
+.gantt a.done span{background:var(--line)}
+.gantt a[aria-current="page"]{color:var(--ink)}
+.gantt a[aria-current="page"] span{background:var(--amber);border-color:var(--amber)}
+
+main{max-width:760px;margin:0 auto;padding:22px 18px 40px}
+.kicker{font-size:14px;color:var(--muted);margin:0 0 6px}
+.hero h1{font-size:clamp(34px,10vw,52px);letter-spacing:-.02em;font-weight:800}
+.hero .week{display:inline-block;background:var(--amber);color:#1B2238;font-weight:700;font-size:14px;
+  padding:3px 10px;border-radius:var(--radius-s);margin-bottom:12px}
+.logro{margin:16px 0 0;padding:14px 16px;background:var(--surface);border-radius:var(--radius-l);border:1px solid var(--line);font-size:16px}
+.logro b{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:2px}
+
+.toc{display:flex;gap:8px;overflow-x:auto;padding:14px 0 6px;margin:0 -18px;padding-left:18px;padding-right:18px;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:0 0 auto;text-decoration:none;font-size:14px;font-weight:600;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);padding:6px 12px;border-radius:999px;white-space:nowrap}
+
+section{margin-top:34px}
+section > h2{font-size:25px;font-weight:700;display:flex;gap:10px;align-items:baseline}
+section > h2 .n{flex:0 0 auto;font-size:15px;color:var(--amber-ink);background:var(--amber-bg);border-radius:var(--radius-s);padding:2px 8px;transform:translateY(-3px)}
+h3{font-size:19px;font-weight:700;margin:22px 0 8px}
+p{margin:10px 0}
+ul,ol{padding-left:22px;margin:10px 0}
+li{margin:4px 0}
+
+.def{background:var(--surface);border-left:4px solid var(--blue);border-radius:0 var(--radius-l) var(--radius-l) 0;padding:12px 16px;margin:14px 0}
+.def b:first-child{color:var(--blue)}
+.exam{background:var(--red-bg);border-radius:var(--radius-l);padding:12px 16px;margin:16px 0;border:1px solid color-mix(in srgb,var(--red) 30%,transparent)}
+.exam strong.t{display:block;color:var(--red);font-size:14px;margin-bottom:2px}
+.note{background:var(--amber-bg);border-radius:var(--radius-l);padding:12px 16px;margin:16px 0;font-size:15.5px}
+.note strong.t{display:block;color:var(--amber-ink);font-size:14px;margin-bottom:2px}
+
+.cards{display:grid;gap:10px;margin:14px 0;grid-template-columns:1fr}
+@media (min-width:560px){.cards.two{grid-template-columns:1fr 1fr}}
+@media (min-width:640px){.cards.three{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:14px 16px}
+.card h4{margin:0 0 4px;font-size:17px;font-family:"Bricolage Grotesque",sans-serif}
+.card p{margin:4px 0;font-size:15.5px}
+.card ul{font-size:15.5px;margin:6px 0}
+.tag{display:inline-block;font-size:12.5px;font-weight:700;padding:1px 8px;border-radius:var(--radius-s);margin-right:4px}
+.tag.ok{background:var(--green-bg);color:var(--green)}
+.tag.bad{background:var(--red-bg);color:var(--red)}
+.tag.key{background:var(--blue-bg);color:var(--blue)}
+
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0;border-radius:var(--radius-l);border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:color-mix(in srgb,var(--line) 45%,var(--surface));font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+table.compact{font-size:13.5px}
+table.compact th,table.compact td{padding:7px 5px}
+table.compact td:first-child,table.compact th:first-child{padding-left:10px}
+td.c,th.c{text-align:center}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.total td{font-weight:700;background:var(--amber-bg)}
+.x{color:var(--amber-ink);font-weight:800}
+.scroll-hint{font-size:13px;color:var(--muted);margin:-8px 0 0}
+
+/* escalera CMMI */
+.stairs{display:flex;flex-direction:column-reverse;gap:6px;margin:14px 0}
+.step{display:grid;grid-template-columns:44px 1fr;border-radius:var(--radius-l);overflow:hidden;background:var(--surface);border:1px solid var(--line)}
+.step .lv{display:flex;align-items:center;justify-content:center;font:800 24px "Bricolage Grotesque",sans-serif;color:#1B2238}
+.step .bd{padding:10px 12px}
+.step .bd h4{margin:0;font-size:16.5px;font-family:"Bricolage Grotesque",sans-serif}
+.step .bd p{margin:3px 0 0;font-size:15px}
+.step .bd small{display:block;color:var(--muted);font-size:13.5px;margin-top:4px}
+
+/* árbol EDT */
+.tree,.tree ul{list-style:none;padding-left:0;margin:0}
+.tree ul{padding-left:18px;border-left:2px solid var(--line);margin-left:10px}
+.tree li{margin:6px 0}
+.tree .nd{display:inline-block;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);padding:3px 9px;font-size:15px}
+.tree .nd.hl{border-color:var(--amber);background:var(--amber-bg);font-weight:700}
+.tree .nd.act{border-style:dashed;color:var(--muted)}
+
+/* chips de flujo */
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0}
+.flow span{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-s);padding:4px 10px;font-size:14.5px}
+.flow i{font-style:normal;color:var(--muted)}
+
+/* preguntas de repaso */
+.quiz details{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);margin:8px 0;padding:0}
+.quiz summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;gap:10px}
+.quiz summary::-webkit-details-marker{display:none}
+.quiz summary::before{content:"+";flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--amber-bg);color:var(--amber-ink);
+  display:inline-flex;align-items:center;justify-content:center;font-weight:800;line-height:1}
+.quiz details[open] summary::before{content:"–"}
+.quiz .ans{padding:0 16px 14px 48px;color:var(--ink);font-size:16px}
+.quiz .ans p:first-child{margin-top:0}
+
+/* navegación inferior */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:40px}
+.pager a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:12px 14px;color:var(--ink)}
+.pager a small{display:block;color:var(--muted);font-size:13px}
+.pager a b{font-size:15.5px}
+.pager a.next{text-align:right;grid-column:2}
+footer{max-width:760px;margin:0 auto;padding:0 18px 30px;color:var(--muted);font-size:13.5px}
+
+/* calculadora */
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:14px 16px;margin:14px 0}
+.calc .row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end}
+.calc label{font-size:13px;color:var(--muted);font-weight:600}
+.calc input{width:100%;font:inherit;font-size:17px;padding:8px;border-radius:var(--radius-s);border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.calc output{display:block;margin-top:12px;font-size:17px}
+.calc output b{font-size:22px;color:var(--amber-ink)}
+
+.gantt ol{grid-template-columns:1.05fr repeat(5,1fr) 1.05fr}
+.gantt a{cursor:pointer}
+.js .week-panel{display:none}
+.js .week-panel.active{display:block}
+.week-panel + .week-panel{border-top:2px dashed var(--line);margin-top:40px;padding-top:10px}
+.js .week-panel + .week-panel{border-top:0;margin-top:0;padding-top:0}
+tr.crit td{background:var(--red-bg);font-weight:600}
+.hero-strip{display:flex;gap:6px;margin:18px 0 0}
+.hero-strip span{flex:1;height:10px;border-radius:5px;background:var(--amber)}
+.hero-strip span:nth-child(2){opacity:.8}.hero-strip span:nth-child(3){opacity:.6}.hero-strip span:nth-child(4){opacity:.45}.hero-strip span:nth-child(5){opacity:.3}
+/* simulacro */
+.mcq{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);padding:14px 16px;margin:12px 0}
+.mcq h4{margin:0 0 10px;font-size:16.5px;font-family:"Bricolage Grotesque",sans-serif}
+.mcq h4 small{display:block;color:var(--muted);font:600 12.5px "Source Sans 3",sans-serif;margin-bottom:3px}
+.mcq button.opt{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;color:var(--ink);background:var(--bg);
+  border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;cursor:pointer}
+.mcq button.opt:disabled{cursor:default}
+.mcq button.opt.right{border-color:var(--green);background:var(--green-bg);font-weight:700}
+.mcq button.opt.wrong{border-color:var(--red);background:var(--red-bg)}
+.mcq .why{display:none;margin-top:8px;font-size:15px;color:var(--muted)}
+.mcq.answered .why{display:block}
+.score{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:var(--ink);color:#fff;border-radius:999px;padding:10px 12px 10px 18px;margin-top:18px;box-shadow:0 6px 18px rgba(27,34,56,.18)}
+.score b{color:var(--amber)}
+.score button{font:inherit;font-size:14px;font-weight:700;border:0;border-radius:999px;padding:7px 14px;background:var(--amber);color:#1B2238;cursor:pointer}
+</style>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<nav class="gantt" aria-label="Secciones del curso"><ol><li><a href="#s0" data-tab="0"><span></span>Inicio</a></li><li><a href="#s1" data-tab="1"><span></span>S1</a></li><li><a href="#s2" data-tab="2"><span></span>S2</a></li><li><a href="#s3" data-tab="3"><span></span>S3</a></li><li><a href="#s4" data-tab="4"><span></span>S4</a></li><li><a href="#s5" data-tab="5"><span></span>S5</a></li><li><a href="#s6" data-tab="6"><span></span>Test</a></li></ol></nav>
+<main>
+<div class="week-panel" id="s0">
+<header class="hero">
+  <p class="kicker">Administración de Proyectos de Software, UPN</p>
+  <h1>Guía de repaso para el examen</h1>
+  <p>Todo lo importante de las semanas 1 a 5 en un solo lugar, con un simulacro de examen al final. Cada semana tiene su pestaña (arriba), con definiciones, tablas, avisos de lo que suele preguntarse y preguntas de autoevaluación que puedes abrir para comprobar tu respuesta.</p>
+<div class="hero-strip" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+</header>
+
+<section id="s0-semanas">
+  <h2>Semanas del curso</h2>
+  <div class="cards">
+    <a class="card" href="#s0-s1" style="text-decoration:none;color:inherit">
+      <h4>Semana 1: Conceptos básicos</h4>
+      <p>Proyecto, triple restricción, programa, portafolio, PMO, ciclos de vida, FAE y APO, competencias del director.</p>
+    </a>
+    <a class="card" href="#s0-s2" style="text-decoration:none;color:inherit">
+      <h4>Semana 2: CMMI, SWEBOK y PMBOK</h4>
+      <p>Los 5 niveles de madurez, las 15 áreas del SWEBOK, las 10 áreas del PMBOK y los enfoques predictivo, ágil e híbrido.</p>
+    </a>
+    <a class="card" href="#s0-s3" style="text-decoration:none;color:inherit">
+      <h4>Semana 3: Equipo de alto desempeño</h4>
+      <p>Código de ética del PMI, rol del director, diversidad cultural, conformación de equipos y roles.</p>
+    </a>
+    <a class="card" href="#s0-s4" style="text-decoration:none;color:inherit">
+      <h4>Semana 4: Iniciando el proyecto</h4>
+      <p>Áreas vs. grupos de procesos, gestión del alcance, requisitos, EDT y sus tipos, recursos y matriz RACI.</p>
+    </a>
+    <a class="card" href="#s0-s5" style="text-decoration:none;color:inherit">
+      <h4>Semana 5: Planificando el proyecto</h4>
+      <p>Cronograma, ruta crítica, línea base, estimación de costos (PERT), presupuesto con reservas y planificación adaptativa.</p>
+    </a>
+    <a class="card" href="#s0-s6" style="text-decoration:none;color:inherit;border-color:var(--amber)">
+      <h4>Simulacro de examen</h4>
+      <p>22 preguntas de opción múltiple con corrección al instante y puntaje.</p>
+    </a>
+  </div>
+</section>
+
+<section id="s0-repaso">
+  <h2>Hoja de repaso rápido</h2>
+  <p>Lo mínimo que deberías poder responder sin mirar tus apuntes.</p>
+
+  <h3>Definiciones clave</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Concepto</th><th>En una línea</th></tr>
+    <tr><td>Proyecto</td><td>Esfuerzo temporal para crear un producto, servicio o resultado único.</td></tr>
+    <tr><td>Triple restricción</td><td>Alcance, tiempo y costo. Extendida: calidad, recursos humanos y riesgos.</td></tr>
+    <tr><td>Programa</td><td>Grupo de proyectos relacionados que se gestionan de forma coordinada.</td></tr>
+    <tr><td>Portafolio</td><td>Conjunto de proyectos, programas y portafolios agrupados por objetivos estratégicos.</td></tr>
+    <tr><td>PMO</td><td>Oficina que da metodología, capacitación, QA, gestión de portafolio y recursos a los proyectos.</td></tr>
+    <tr><td>FAE</td><td>Condiciones fuera del control del equipo que influyen, restringen o dirigen el proyecto.</td></tr>
+    <tr><td>APO</td><td>Planes, procesos, políticas, procedimientos y bases de conocimiento propios de la organización.</td></tr>
+    <tr><td>Gestión del alcance</td><td>Definir qué trabajo se hará y asegurar que se haga ese trabajo y solo ese.</td></tr>
+    <tr><td>EDT (WBS)</td><td>Descomposición jerárquica del trabajo hasta paquetes de trabajo.</td></tr>
+    <tr><td>Hidden work</td><td>Trabajo necesario que no aparece en la EDT ni en la lista de actividades.</td></tr>
+    <tr><td>Ruta crítica</td><td>La secuencia de actividades más larga; determina la duración mínima del proyecto.</td></tr>
+    <tr><td>Línea base</td><td>Versión aprobada que solo cambia por control de cambios formal y sirve para comparar con lo real.</td></tr>
+  </table></div>
+
+  <h3>Fórmulas y números</h3>
+  <div class="cards two">
+    <div class="card"><h4>Estimación de tres valores (PERT)</h4><p><b>(O + 4MP + P) / 6</b></p><p>O = optimista, MP = más probable, P = pesimista.</p></div>
+    <div class="card"><h4>Estimación paramétrica</h4><p>Relación matemática, por ejemplo <b>Y = 5X + 4</b>.</p></div>
+    <div class="card"><h4>Presupuesto del ejemplo de clase</h4><p>Línea base 18,140 + contingencia 8% (1,451.20) + gestión 2% (362.80) = <b>19,954</b>.</p></div>
+    <div class="card"><h4>Ruta crítica del ejemplo</h4><p>Volquete 3d, transporte 1d, acumular maleza 3d, retirar maleza 2d = <b>9 días</b>.</p></div>
+  </div>
+
+  <h3>Listas que se preguntan</h3>
+  <div class="cards two">
+    <div class="card"><h4>CMMI, de 1 a 5</h4><p>Inicial, Repetible (Administrado), Definido, Manejado (Cuantitativamente administrado), Optimizado.</p></div>
+    <div class="card"><h4>5 grupos de procesos</h4><p>Inicio, Planificación, Ejecución, Monitoreo y control, Cierre.</p></div>
+    <div class="card"><h4>10 áreas del PMBOK</h4><p>Integración, Alcance, Tiempo, Costos, Calidad, RR. HH., Comunicaciones, Riesgos, Adquisiciones e Interesados.</p></div>
+    <div class="card"><h4>RACI</h4><p><b>R</b> ejecuta, <b>A</b> rinde cuentas, <b>C</b> es consultado, <b>I</b> es informado.</p></div>
+    <div class="card"><h4>Código de ética PMI</h4><p>Responsabilidad, Respeto, Equidad y Honestidad.</p></div>
+    <div class="card"><h4>Cebolla de planificación ágil</h4><p>Visión, Roadmap, Release, Iteración y Diario (de afuera hacia adentro).</p></div>
+  </div>
+</section>
+<nav class="pager" aria-label="Secciones"><a class="next" href="#s1"><small>Siguiente</small><b>Semana 1: Conceptos básicos</b></a></nav></div><div class="week-panel" id="s1">
+<header class="hero">
+  <span class="week">Semana 1</span>
+  <h1>Conceptos básicos de administración de proyectos</h1>
+  <p class="logro"><b>Logro de la sesión</b>Identificar los conceptos básicos de la gestión de proyectos y los elementos de la triple restricción (alcance, tiempo y costos) para planificar de forma eficiente.</p>
+</header>
+<nav class="toc" aria-label="Temas de la semana">
+  <a href="#s1-proyecto">Proyecto</a><a href="#s1-dimensiones">Programa y portafolio</a><a href="#s1-ciclos">Ciclos de vida</a><a href="#s1-fae">FAE</a><a href="#s1-apo">APO</a><a href="#s1-director">Director</a><a href="#s1-proy-vs-op">Proyecto vs. operación</a><a href="#s1-estructuras">Estructuras</a><a href="#s1-interesados">Interesados</a><a href="#s1-preguntas">Preguntas</a>
+</nav>
+
+<section id="s1-proyecto">
+  <h2><span class="n">1</span>Base del conocimiento</h2>
+  <div class="def"><b>Proyecto:</b> esfuerzo <b>temporal</b> que se lleva a cabo para crear un producto, servicio o resultado <b>único</b>.</div>
+  <p>Temporal significa que tiene un inicio y un fin definidos. Único significa que el resultado no es exactamente igual a otro anterior, aunque se parezca.</p>
+  <h3>Triple restricción</h3>
+  <p>Todo proyecto está sujeto a tres restricciones principales. Si cambias una, las otras se ven afectadas.</p>
+  <svg viewBox="0 0 320 200" role="img" aria-label="Triángulo con alcance, tiempo y costo en los vértices y calidad al centro" style="display:block;margin:10px auto;max-width:340px">
+    <polygon points="160,20 30,180 290,180" fill="var(--amber-bg)" stroke="var(--amber)" stroke-width="3"/>
+    <text x="160" y="14" text-anchor="middle" font-weight="700" font-size="15" fill="var(--ink)">ALCANCE</text>
+    <text x="30" y="197" text-anchor="middle" font-weight="700" font-size="15" fill="var(--ink)">TIEMPO</text>
+    <text x="290" y="197" text-anchor="middle" font-weight="700" font-size="15" fill="var(--ink)">COSTO</text>
+    <text x="160" y="130" text-anchor="middle" font-size="14" fill="var(--muted)">Calidad</text>
+  </svg>
+  <p><b>Triple restricción extendida:</b> además de las tres anteriores, se consideran <b>calidad</b>, <b>recursos humanos</b> y <b>riesgos</b>.</p>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>La triple restricción clásica es alcance, tiempo y costo. Calidad, recursos humanos y riesgos son la versión <b>extendida</b>. No las mezcles.</div>
+</section>
+
+<section id="s1-dimensiones">
+  <h2><span class="n">2</span>Dimensiones de un proyecto</h2>
+  <div class="cards">
+    <div class="card"><h4>Proyecto</h4><p>Un esfuerzo individual con un resultado único.</p></div>
+    <div class="card"><h4>Programa</h4><p>Varios proyectos relacionados (Proyecto 1, 2 … N) que se gestionan de forma coordinada a lo largo del tiempo para obtener beneficios que no se lograrían por separado.</p></div>
+    <div class="card"><h4>Portafolio</h4><p>Agrupa proyectos, programas y otros portafolios según objetivos estratégicos. No tienen por qué estar relacionados entre sí.</p>
+      <p><b>Ejemplo de clase:</b> Portafolio de productos en banca, que contiene el Portafolio de cuentas corrientes, el Proyecto cuentas y el Programa tarjetas.</p></div>
+  </div>
+  <h3>Oficina de proyectos (PMO)</h3>
+  <p>Estructura que estandariza y apoya la gestión de proyectos en la organización. En la clase se mostraron sus funciones:</p>
+  <div class="flow"><span>Metodología y soporte</span><span>Capacitación</span><span>QA y consultoría</span><span>Portafolio</span><span>Recursos de proyectos</span></div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>Programa = proyectos <b>relacionados</b>. Portafolio = agrupación <b>estratégica</b>, puede incluir programas y proyectos no relacionados.</div>
+</section>
+
+<section id="s1-ciclos">
+  <h2><span class="n">3</span>Ciclos de vida</h2>
+  <h3>Cascada</h3>
+  <p>Cada fase se completa antes de pasar a la siguiente.</p>
+  <div class="flow"><span>Requisitos</span><i>›</i><span>Factibilidad</span><i>›</i><span>Planificación</span><i>›</i><span>Diseño</span><i>›</i><span>Construcción</span><i>›</i><span>Pruebas</span><i>›</i><span>Entrega</span></div>
+  <h3>Incremental</h3>
+  <p>El producto se construye en iteraciones. En cada una se hace análisis, diseño, codificación y pruebas, y se entrega una versión que alimenta la siguiente iteración.</p>
+  <div class="flow"><span>Iteración 1 › Versión 1</span><i>›</i><span>Iteración 2 › Versión 2</span><i>›</i><span>Iteración 3 › Versión 3</span></div>
+</section>
+
+<section id="s1-fae">
+  <h2><span class="n">4</span>Factores ambientales de la organización (FAE)</h2>
+  <div class="def"><b>FAE:</b> condiciones que <b>no están bajo el control directo del equipo</b> y que influyen, restringen o dirigen el proyecto, programa o portafolio.</div>
+  <p>Pueden ser internos o externos a la organización. Ejemplos típicos según el PMBOK: cultura y estructura organizacional, infraestructura, condiciones del mercado, regulaciones y leyes, clima político o económico.</p>
+</section>
+
+<section id="s1-apo">
+  <h2><span class="n">5</span>Activos de los procesos de la organización (APO)</h2>
+  <div class="def"><b>APO:</b> planes, procesos, políticas, procedimientos y bases de conocimiento <b>específicos de la organización ejecutante</b> y que son utilizados por ella.</div>
+  <p>Ejemplos: plantillas, metodologías internas, lecciones aprendidas, información histórica de proyectos anteriores.</p>
+  <div class="scroll"><table class="compact">
+    <tr><th></th><th>FAE</th><th>APO</th></tr>
+    <tr><td><b>Control</b></td><td>No los controla el equipo</td><td>Son de la organización y el equipo los usa y actualiza</td></tr>
+    <tr><td><b>Efecto</b></td><td>Influyen, restringen o dirigen</td><td>Apoyan y guían la ejecución</td></tr>
+    <tr><td><b>Ejemplo</b></td><td>Una ley, el mercado, la cultura</td><td>Plantillas, lecciones aprendidas</td></tr>
+  </table></div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>FAE y APO aparecen como <b>entradas</b> en casi todos los procesos de planificación (por ejemplo, al planificar el alcance o el cronograma).</div>
+</section>
+
+<section id="s1-director">
+  <h2><span class="n">6</span>Competencias del director de proyectos</h2>
+  <p>El director <b>no necesita saber desempeñar el rol de cada integrante</b>, pero sí debe tener conocimientos, entendimiento y experiencia.</p>
+  <ul>
+    <li>Proporciona <b>liderazgo, planificación y coordinación</b> a través de las comunicaciones.</li>
+    <li>Comunicaciones <b>escritas</b>: planes y cronogramas documentados.</li>
+    <li>Comunicaciones <b>en tiempo real</b>: reuniones e indicaciones al equipo.</li>
+  </ul>
+  <h3>Habilidades de gestión estratégica y de negocios</h3>
+  <p>Conocimiento de la industria y de la organización que mejora el desempeño y la entrega de resultados de negocio.</p>
+  <p>Según investigaciones del PMI, las habilidades técnicas de dirección de proyectos <b>son esenciales pero no suficientes</b> en un mercado global cada vez más competitivo. Las organizaciones buscan además liderazgo e inteligencia de negocios.</p>
+  <div class="note"><strong class="t">Complemento del PMBOK</strong>Esto corresponde al "triángulo de talentos" del PMI: dirección técnica de proyectos, liderazgo, y gestión estratégica y de negocios.</div>
+  <h3>Conclusiones de la sesión</h3>
+  <ul>
+    <li>Un jefe de proyectos necesita conocer diversas actividades de gestión.</li>
+    <li>No basta con conocer las herramientas: hay que saber hacia dónde va la empresa.</li>
+  </ul>
+</section>
+
+
+<section id="s1-proy-vs-op">
+  <h2><span class="n">7</span>Proyecto vs. operaciones</h2>
+  <div class="note"><strong class="t">Complemento del PMBOK</strong>Esta sección amplía la semana 1 con conceptos del PMBOK que suelen aparecer junto a la definición de proyecto.</div>
+  <div class="scroll"><table class="compact">
+    <tr><th></th><th>Proyecto</th><th>Operación</th></tr>
+    <tr><td><b>Duración</b></td><td>Temporal: inicio y fin definidos</td><td>Continua y repetitiva</td></tr>
+    <tr><td><b>Resultado</b></td><td>Único</td><td>Repetido (mismo producto o servicio)</td></tr>
+    <tr><td><b>Objetivo</b></td><td>Lograr algo y terminar</td><td>Sostener el negocio</td></tr>
+    <tr><td><b>Ejemplo</b></td><td>Desarrollar una app de delivery</td><td>Dar soporte diario a esa app</td></tr>
+  </table></div>
+  <h3>¿Cuándo termina un proyecto?</h3>
+  <ul>
+    <li>Cuando se cumplen sus objetivos.</li>
+    <li>Cuando los objetivos no pueden cumplirse.</li>
+    <li>Cuando se agota el financiamiento o ya no hay necesidad del proyecto.</li>
+    <li>Cuando el cliente o el patrocinador decide cancelarlo.</li>
+  </ul>
+  <h3>Fases genéricas del ciclo de vida</h3>
+  <div class="flow"><span>Inicio del proyecto</span><i>›</i><span>Organización y preparación</span><i>›</i><span>Ejecución del trabajo</span><i>›</i><span>Cierre</span></div>
+  <p>Al inicio, la <b>influencia de los interesados y el riesgo</b> son altos y el <b>costo de los cambios</b> es bajo. A medida que avanza el proyecto, el riesgo baja y el costo de cambiar algo sube.</p>
+  <h3>Tipos de ciclo de vida</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Tipo</th><th>Requisitos</th><th>Entregas</th></tr>
+    <tr><td>Predictivo</td><td>Fijos desde el inicio</td><td>Una sola, al final</td></tr>
+    <tr><td>Iterativo</td><td>Se refinan con retroalimentación</td><td>Una sola, mejorada en ciclos</td></tr>
+    <tr><td>Incremental</td><td>Pueden variar</td><td>Frecuentes y parciales</td></tr>
+    <tr><td>Adaptativo (ágil)</td><td>Dinámicos</td><td>Frecuentes, de valor para el cliente</td></tr>
+    <tr><td>Híbrido</td><td>Mezcla</td><td>Mezcla</td></tr>
+  </table></div>
+</section>
+
+<section id="s1-estructuras">
+  <h2><span class="n">8</span>Estructuras organizacionales y tipos de PMO</h2>
+  <p>La estructura de la empresa es un <b>FAE</b>: define cuánta autoridad tiene el director del proyecto.</p>
+  <div class="scroll"><table class="compact">
+    <tr><th>Estructura</th><th>Autoridad del director</th></tr>
+    <tr><td>Funcional</td><td>Muy baja; manda el gerente funcional</td></tr>
+    <tr><td>Matricial débil</td><td>Baja; el director actúa como coordinador</td></tr>
+    <tr><td>Matricial equilibrada</td><td>Baja a moderada; poder compartido</td></tr>
+    <tr><td>Matricial fuerte</td><td>Moderada a alta</td></tr>
+    <tr><td>Orientada a proyectos</td><td>Alta a casi total</td></tr>
+  </table></div>
+  <h3>Tipos de PMO</h3>
+  <div class="cards three">
+    <div class="card"><h4>De apoyo</h4><p>Control <b>bajo</b>. Da plantillas, capacitación y lecciones aprendidas.</p></div>
+    <div class="card"><h4>De control</h4><p>Control <b>moderado</b>. Exige cumplir metodologías, formatos y auditorías.</p></div>
+    <div class="card"><h4>Directiva</h4><p>Control <b>alto</b>. Dirige los proyectos directamente.</p></div>
+  </div>
+</section>
+
+<section id="s1-interesados">
+  <h2><span class="n">9</span>Interesados y triángulo de talentos</h2>
+  <div class="def"><b>Interesado (stakeholder):</b> persona, grupo u organización que puede afectar o ser afectada por una decisión, actividad o resultado del proyecto.</div>
+  <p>Ejemplos: patrocinador, cliente, usuarios finales, equipo del proyecto, gerentes funcionales, proveedores, entes reguladores.</p>
+  <h3>Triángulo de talentos del PMI</h3>
+  <div class="cards three">
+    <div class="card"><h4>Dirección técnica de proyectos</h4><p>Alcance, cronograma, costos, riesgos, herramientas.</p></div>
+    <div class="card"><h4>Liderazgo</h4><p>Motivar, negociar, comunicar, resolver conflictos.</p></div>
+    <div class="card"><h4>Gestión estratégica y de negocios</h4><p>Entender la industria, la estrategia y el valor para el negocio.</p></div>
+  </div>
+</section>
+
+<section id="s1-preguntas" class="quiz">
+  <h2>Preguntas de repaso</h2>
+  <details><summary>¿Qué es un proyecto y cuáles son sus dos características clave?</summary><div class="ans"><p>Un esfuerzo temporal para crear un producto, servicio o resultado único. Es temporal (inicio y fin) y su resultado es único.</p></div></details>
+  <details><summary>¿Cuál es la triple restricción y cuál la extendida?</summary><div class="ans"><p>Clásica: alcance, tiempo y costo. Extendida: calidad, recursos humanos y riesgos.</p></div></details>
+  <details><summary>¿En qué se diferencia un programa de un portafolio?</summary><div class="ans"><p>El programa agrupa proyectos relacionados gestionados de forma coordinada. El portafolio agrupa proyectos y programas por objetivos estratégicos, aunque no estén relacionados.</p></div></details>
+  <details><summary>Menciona tres funciones de una PMO.</summary><div class="ans"><p>Metodología y soporte, capacitación, QA y consultoría, gestión del portafolio y recursos de proyectos.</p></div></details>
+  <details><summary>¿Una nueva ley de protección de datos es FAE o APO?</summary><div class="ans"><p>FAE: es una condición externa que el equipo no controla y que restringe el proyecto.</p></div></details>
+  <details><summary>¿Las lecciones aprendidas de un proyecto anterior son FAE o APO?</summary><div class="ans"><p>APO: forman parte de la base de conocimiento propia de la organización.</p></div></details>
+  <details><summary>Diferencia entre ciclo de vida cascada e incremental.</summary><div class="ans"><p>En cascada las fases son secuenciales y se entrega al final. En incremental se trabaja por iteraciones y en cada una se entrega una versión funcional.</p></div></details>
+  <details><summary>¿Por qué no bastan las habilidades técnicas del director?</summary><div class="ans"><p>Porque, según el PMI, el mercado es cada vez más complejo y competitivo; se requieren también liderazgo e inteligencia de negocios.</p></div></details>
+
+  <details><summary>¿Por qué dar soporte diario a un sistema no es un proyecto?</summary><div class="ans"><p>Porque es una operación: es continua y repetitiva, no temporal ni con un resultado único.</p></div></details>
+  <details><summary>¿En qué momento del proyecto es más barato hacer cambios?</summary><div class="ans"><p>Al inicio: el costo de los cambios crece a medida que avanza el proyecto.</p></div></details>
+  <details><summary>¿En qué estructura organizacional el director tiene más autoridad?</summary><div class="ans"><p>En la orientada a proyectos. En la funcional tiene la menor.</p></div></details>
+  <details><summary>¿Qué tipo de PMO dirige los proyectos directamente?</summary><div class="ans"><p>La PMO directiva (control alto).</p></div></details>
+</section>
+<nav class="pager" aria-label="Secciones"><a href="#s0"><small>Anterior</small><b>Inicio</b></a><a class="next" href="#s2"><small>Siguiente</small><b>Semana 2: CMMI, PMBOK y SWEBOK</b></a></nav></div><div class="week-panel" id="s2">
+<header class="hero">
+  <span class="week">Semana 2</span>
+  <h1>Relación de proyectos con CMMI, PMBOK y SWEBOK</h1>
+  <p class="logro"><b>Logro de la sesión</b>Identificar la gestión de proyectos con estándares como CMMI, PMBOK y SWEBOK, para tener sustento teórico sobre el uso de mejores prácticas.</p>
+</header>
+<nav class="toc" aria-label="Temas de la semana">
+  <a href="#s2-cmmi">CMMI</a><a href="#s2-swebok">SWEBOK</a><a href="#s2-pmbok">PMBOK</a><a href="#s2-enfoques">Predictivo, ágil, híbrido</a><a href="#s2-scrum">Scrum</a><a href="#s2-versiones">Versiones</a><a href="#s2-preguntas">Preguntas</a>
+</nav>
+
+<section id="s2-cmmi">
+  <h2><span class="n">1</span>CMMI</h2>
+  <p>Modelo de <b>madurez de procesos</b>. Una organización sube de nivel a medida que sus procesos se vuelven más disciplinados, estandarizados, medidos y mejorados. Mientras más bajo el nivel, más <b>riesgo y gasto</b>; mientras más alto, más <b>productividad y calidad</b>.</p>
+  <div class="stairs">
+    <div class="step"><div class="lv" style="background:#E86A5A">1</div><div class="bd"><h4>Inicial</h4><p>Esfuerzos heroicos. No significa que no se pueda producir buen software, sino que el costo de hacerlo es demasiado alto en términos financieros y humanos.</p><small>Diseño, desarrollo, integración y testeo sin proceso definido.</small></div></div>
+    <div class="step"><div class="lv" style="background:#F2A65A">2</div><div class="bd"><h4>Repetible (Administrado)</h4><p>Proceso disciplinado. Control administrativo básico para cumplir compromisos de costos, cronogramas y requerimientos.</p><small>Áreas: administración de requerimientos, planeamiento y monitoreo de proyectos, acuerdos con proveedores, aseguramiento de calidad, gestión de la configuración, medición y análisis.</small></div></div>
+    <div class="step"><div class="lv" style="background:#F2D45A">3</div><div class="bd"><h4>Definido</h4><p>Proceso estándar. Procesos documentados, estandarizados y consistentes en toda la organización.</p><small>Áreas: desarrollo de requerimientos, solución técnica, integración de productos, verificación, validación, gestión de riesgos, entrenamiento organizacional, análisis de decisiones.</small></div></div>
+    <div class="step"><div class="lv" style="background:#7FD3E6">4</div><div class="bd"><h4>Manejado (Cuantitativamente administrado)</h4><p>Proceso predecible. Objetivos cuantitativos de calidad para el producto y el proceso.</p><small>Áreas: administración cuantitativa de proyectos, performance de procesos organizacionales.</small></div></div>
+    <div class="step"><div class="lv" style="background:#8BDB7A">5</div><div class="bd"><h4>Optimizado</h4><p>Mejoramiento continuo. Proceso proactivo para prevenir errores; análisis costo/beneficio para evaluar nuevas tecnologías y métodos.</p><small>Áreas: análisis de causas y resolución, innovación organizacional.</small></div></div>
+  </div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>Aprende la palabra que acompaña cada salto: <b>disciplinado</b> (1 a 2), <b>estándar</b> (2 a 3), <b>predecible</b> (3 a 4), <b>mejoramiento continuo</b> (4 a 5).</div>
+</section>
+
+<section id="s2-swebok">
+  <h2><span class="n">2</span>SWEBOK</h2>
+  <div class="def"><b>SWEBOK</b> (Software Engineering Body of Knowledge): guía del <b>IEEE</b> que reúne el conocimiento <b>generalmente aceptado</b> de la ingeniería de software, es decir, aplicable a la mayoría de los proyectos, la mayoría de las veces, con amplio consenso sobre su valor.</div>
+  <p>No cubre el conocimiento especializado ni el avanzado o de investigación. Su referencia es el nivel de un egresado universitario con 4 años de experiencia.</p>
+  <h3>Las 15 áreas de conocimiento</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th class="c">#</th><th>Área</th><th>Grupo</th></tr>
+    <tr><td class="c">1</td><td>Requerimientos de software</td><td rowspan="6">Ciclo de desarrollo</td></tr>
+    <tr><td class="c">2</td><td>Diseño de software</td></tr>
+    <tr><td class="c">3</td><td>Construcción de software</td></tr>
+    <tr><td class="c">4</td><td>Pruebas de software</td></tr>
+    <tr><td class="c">5</td><td>Mantenimiento de software</td></tr>
+    <tr><td class="c">6</td><td>Gestión de la configuración</td></tr>
+    <tr><td class="c">7</td><td>Gestión de la ingeniería de software</td><td rowspan="4">Gestión y calidad</td></tr>
+    <tr><td class="c">8</td><td>Proceso de ingeniería de software</td></tr>
+    <tr><td class="c">9</td><td>Modelos y métodos</td></tr>
+    <tr><td class="c">10</td><td>Calidad de software</td></tr>
+    <tr><td class="c">11</td><td>Práctica profesional</td><td rowspan="2">Profesión</td></tr>
+    <tr><td class="c">12</td><td>Economía de la ingeniería de software</td></tr>
+    <tr><td class="c">13</td><td>Fundamentos de computación</td><td rowspan="3">Fundamentos</td></tr>
+    <tr><td class="c">14</td><td>Fundamentos matemáticos</td></tr>
+    <tr><td class="c">15</td><td>Fundamentos de ingeniería</td></tr>
+  </table></div>
+  <p class="scroll-hint">La columna "Grupo" es una agrupación para memorizar, no forma parte de la diapositiva.</p>
+</section>
+
+<section id="s2-pmbok">
+  <h2><span class="n">3</span>PMBOK</h2>
+  <div class="def"><b>PMBOK</b> (Project Management Body of Knowledge): guía del <b>PMI</b> con los fundamentos para la dirección de proyectos.</div>
+  <h3>Las 10 áreas de conocimiento</h3>
+  <p>Todas dependen de la dirección de proyectos:</p>
+  <div class="cards two">
+    <div class="card"><p><b>1. Integración</b>: une y coordina todas las áreas.</p></div>
+    <div class="card"><p><b>2. Alcance</b>: qué se hace y qué no.</p></div>
+    <div class="card"><p><b>3. Tiempo</b> (cronograma): cuándo se hace.</p></div>
+    <div class="card"><p><b>4. Costos</b>: cuánto cuesta.</p></div>
+    <div class="card"><p><b>5. Calidad</b>: que cumpla lo requerido.</p></div>
+    <div class="card"><p><b>6. Recursos humanos</b>: quién lo hace.</p></div>
+    <div class="card"><p><b>7. Comunicaciones</b>: quién se entera de qué.</p></div>
+    <div class="card"><p><b>8. Riesgos</b>: qué podría salir mal o bien.</p></div>
+    <div class="card"><p><b>9. Abastecimiento</b> (adquisiciones): qué se compra o contrata.</p></div>
+    <div class="card"><p><b>10. Interesados</b> (stakeholders): a quién afecta.</p></div>
+  </div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>No confundas: el <b>PMBOK</b> es del <b>PMI</b> y trata la gestión de proyectos en general; el <b>SWEBOK</b> es del <b>IEEE</b> y trata la ingeniería de software; <b>CMMI</b> mide la <b>madurez de los procesos</b> de una organización.</div>
+</section>
+
+<section id="s2-enfoques">
+  <h2><span class="n">4</span>Predictivo, ágil o híbrido</h2>
+  <div class="cards">
+    <div class="card">
+      <h4>Predictivo: cascada, plan por adelantado</h4>
+      <p>Alcance definido, requisitos estables y entregables verificables. El plan se construye una vez y se ejecuta contra la línea base. Los cambios pasan por una junta formal.</p>
+      <p><span class="tag ok">Funciona bien</span>cumplir contratos, obtener permisos, fabricar algo físico.</p>
+      <p><span class="tag bad">Funciona mal</span>cuando los requisitos cambian constantemente.</p>
+      <p><span class="tag key">Palabras clave</span>actividades, línea base, control de cambios.</p>
+    </div>
+    <div class="card">
+      <h4>Ágil: iteración corta, cambio rápido</h4>
+      <p>Se entrega un incremento funcionando cada 2 a 4 semanas y el alcance se reprioriza según lo aprendido. El plan vive en el último sprint.</p>
+      <p><span class="tag ok">Funciona bien</span>reducir el riesgo descubriendo pronto lo que el usuario necesita.</p>
+      <p><span class="tag bad">Funciona mal</span>cuando alcance y presupuesto están fijados por contrato.</p>
+      <p><span class="tag key">Palabras clave</span>sprint, incremento, backlog, retrospectiva, demo.</p>
+    </div>
+    <div class="card">
+      <h4>Híbrido: un marco gobierna a otro</h4>
+      <p>Cascada para lo contractual y predecible; ágil para lo incierto. La mezcla se negocia a propósito, no por accidente ni por inercia.</p>
+      <p><span class="tag ok">Funciona bien</span>programas grandes con partes conocidas y partes desconocidas.</p>
+      <p><span class="tag bad">Funciona mal</span>sin un responsable que asuma el costo de la interfaz entre ambos.</p>
+      <p><span class="tag key">Palabras clave</span>cascada + ágil.</p>
+    </div>
+  </div>
+  <h3>Conclusiones de la sesión</h3>
+  <ul>
+    <li>Un jefe de proyectos necesita conocer diversas actividades de gestión.</li>
+    <li>No basta con conocer las herramientas: hay que saber cómo aplicarlas.</li>
+  </ul>
+</section>
+
+
+<section id="s2-scrum">
+  <h2><span class="n">5</span>Scrum en resumen</h2>
+  <p><b>La Guía de Scrum 2020</b> es una referencia del curso. Scrum es un marco de trabajo ligero, basado en el empirismo, para generar valor mediante soluciones adaptativas.</p>
+  <h3>Pilares y valores</h3>
+  <div class="cards two">
+    <div class="card"><h4>3 pilares del empirismo</h4><p>Transparencia, inspección y adaptación.</p></div>
+    <div class="card"><h4>5 valores</h4><p>Compromiso, foco, apertura, respeto y coraje.</p></div>
+  </div>
+  <h3>Responsabilidades (Scrum Team)</h3>
+  <div class="cards three">
+    <div class="card"><h4>Product Owner</h4><p>Maximiza el valor del producto y gestiona el Product Backlog. Es una sola persona.</p></div>
+    <div class="card"><h4>Scrum Master</h4><p>Asegura que Scrum se entienda y se aplique; líder que sirve al equipo y elimina impedimentos.</p></div>
+    <div class="card"><h4>Developers</h4><p>Crean el incremento en cada sprint. Se auto-gestionan.</p></div>
+  </div>
+  <h3>Eventos</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Evento</th><th>Para qué</th><th>Duración máx. (sprint de 1 mes)</th></tr>
+    <tr><td>Sprint</td><td>Contenedor de todos los eventos</td><td>1 mes o menos</td></tr>
+    <tr><td>Sprint Planning</td><td>Definir qué se hará y cómo</td><td>8 horas</td></tr>
+    <tr><td>Daily Scrum</td><td>Inspeccionar el avance hacia el objetivo del sprint</td><td>15 minutos</td></tr>
+    <tr><td>Sprint Review</td><td>Mostrar el incremento a los interesados</td><td>4 horas</td></tr>
+    <tr><td>Sprint Retrospective</td><td>Mejorar la forma de trabajar</td><td>3 horas</td></tr>
+  </table></div>
+  <h3>Artefactos y sus compromisos</h3>
+  <div class="cards three">
+    <div class="card"><h4>Product Backlog</h4><p>Lista ordenada de todo lo necesario para el producto.</p><p><span class="tag key">Compromiso</span>Objetivo del producto</p></div>
+    <div class="card"><h4>Sprint Backlog</h4><p>Lo elegido para el sprint más el plan para lograrlo.</p><p><span class="tag key">Compromiso</span>Objetivo del sprint</p></div>
+    <div class="card"><h4>Incremento</h4><p>Paso concreto hacia el objetivo del producto, utilizable.</p><p><span class="tag key">Compromiso</span>Definición de terminado</p></div>
+  </div>
+  <h3>Manifiesto ágil: 4 valores</h3>
+  <ul>
+    <li><b>Individuos e interacciones</b> sobre procesos y herramientas.</li>
+    <li><b>Software funcionando</b> sobre documentación extensiva.</li>
+    <li><b>Colaboración con el cliente</b> sobre negociación contractual.</li>
+    <li><b>Respuesta ante el cambio</b> sobre seguir un plan.</li>
+  </ul>
+  <p>Lo de la derecha tiene valor, pero se valora más lo de la izquierda.</p>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>En la Guía 2020 ya no se habla de "Development Team" sino de <b>Developers</b>, y el Scrum Master es un <b>líder que sirve</b>, no un jefe del equipo.</div>
+</section>
+
+<section id="s2-versiones">
+  <h2><span class="n">6</span>Versiones de los estándares</h2>
+  <div class="note"><strong class="t">Complemento del PMBOK</strong>Contexto útil si te preguntan por qué el curso cita dos ediciones del PMBOK.</div>
+  <div class="cards">
+    <div class="card"><h4>PMBOK 6.ª edición (2017)</h4><p>Basada en <b>procesos</b>: 5 grupos de procesos, 10 áreas de conocimiento y 49 procesos con entradas, herramientas y salidas (ITTO).</p></div>
+    <div class="card"><h4>PMBOK 7.ª edición (2021)</h4><p>Basada en <b>principios</b>: 12 principios de la dirección de proyectos y 8 dominios de desempeño (interesados, equipo, enfoque de desarrollo y ciclo de vida, planificación, trabajo del proyecto, entrega, medición, incertidumbre). Da más peso a lo ágil y al valor.</p></div>
+    <div class="card"><h4>SWEBOK</h4><p>La versión 3 (2014) tiene las 15 áreas vistas en clase. La versión 4 (2024) agrega áreas como arquitectura de software, operaciones de ingeniería de software y seguridad de software.</p></div>
+    <div class="card"><h4>CMMI</h4><p>Puede aplicarse en representación <b>por etapas</b> (niveles de madurez 1 a 5, para toda la organización) o <b>continua</b> (niveles de capacidad por área de proceso).</p></div>
+  </div>
+</section>
+
+<section id="s2-preguntas" class="quiz">
+  <h2>Preguntas de repaso</h2>
+  <details><summary>¿Por qué es necesario usar estándares como CMMI, PMBOK y SWEBOK?</summary><div class="ans"><p>Porque recogen buenas prácticas probadas y aceptadas: dan un lenguaje común, reducen riesgos y costos, hacen los procesos repetibles y medibles, y mejoran la calidad del producto y la predictibilidad del proyecto.</p></div></details>
+  <details><summary>Ordena los niveles de CMMI y di qué caracteriza al nivel 3.</summary><div class="ans"><p>1 Inicial, 2 Repetible, 3 Definido, 4 Manejado, 5 Optimizado. En el 3 los procesos están documentados, estandarizados y son consistentes en toda la organización.</p></div></details>
+  <details><summary>Una empresa entrega buen software pero con horas extra y "héroes". ¿Qué nivel CMMI es?</summary><div class="ans"><p>Nivel 1, Inicial: puede producir buen software, pero a un costo financiero y humano muy alto.</p></div></details>
+  <details><summary>¿Qué significa que el SWEBOK cubra conocimiento "generalmente aceptado"?</summary><div class="ans"><p>Que se aplica a la mayoría de los proyectos, la mayoría de las veces, y existe amplio consenso sobre su valor y utilidad.</p></div></details>
+  <details><summary>Menciona las 10 áreas de conocimiento del PMBOK.</summary><div class="ans"><p>Integración, alcance, tiempo, costos, calidad, recursos humanos, comunicaciones, riesgos, adquisiciones e interesados.</p></div></details>
+  <details><summary>Un proyecto del Estado con contrato cerrado y requisitos fijos: ¿qué enfoque conviene?</summary><div class="ans"><p>Predictivo: alcance y presupuesto definidos por contrato, con línea base y control de cambios formal.</p></div></details>
+  <details><summary>¿Cuándo usar un enfoque híbrido?</summary><div class="ans"><p>En programas grandes con partes conocidas (cascada para lo contractual) y partes inciertas (ágil), siempre que alguien se haga cargo de la interfaz entre ambos.</p></div></details>
+
+  <details><summary>¿Cuáles son los tres pilares de Scrum?</summary><div class="ans"><p>Transparencia, inspección y adaptación.</p></div></details>
+  <details><summary>¿Cuánto dura como máximo el Daily Scrum?</summary><div class="ans"><p>15 minutos.</p></div></details>
+  <details><summary>¿Qué compromiso acompaña al Incremento?</summary><div class="ans"><p>La definición de terminado (Definition of Done).</p></div></details>
+  <details><summary>¿Qué diferencia principal hay entre el PMBOK 6 y el 7?</summary><div class="ans"><p>El 6 se basa en procesos (grupos y áreas); el 7 se basa en principios y dominios de desempeño.</p></div></details>
+</section>
+<nav class="pager" aria-label="Secciones"><a href="#s1"><small>Anterior</small><b>Semana 1</b></a><a class="next" href="#s3"><small>Siguiente</small><b>Semana 3: Equipo de alto desempeño</b></a></nav></div><div class="week-panel" id="s3">
+<header class="hero">
+  <span class="week">Semana 3</span>
+  <h1>Crear un equipo de alto desempeño</h1>
+  <p class="logro"><b>Logro de la sesión</b>Elaborar un informe sobre un capítulo de la ley peruana para personas con discapacidad, para comprender que todas las personas pueden ser parte de un equipo de proyectos y que ese equipo puede tener alto rendimiento.</p>
+</header>
+<nav class="toc" aria-label="Temas de la semana">
+  <a href="#s3-etica">Código de ética</a><a href="#s3-rol">Rol del director</a><a href="#s3-diversidad">Diversidad</a><a href="#s3-equipo">Conformación</a><a href="#s3-ley">Ley 29973</a><a href="#s3-tuckman">Etapas del equipo</a><a href="#s3-conflictos">Conflictos</a><a href="#s3-herramientas">Herramientas</a><a href="#s3-preguntas">Preguntas</a>
+</nav>
+
+<section id="s3-etica">
+  <h2><span class="n">1</span>Código de ética y conducta profesional (PMI)</h2>
+  <p>El PMI define cuatro valores para el director de proyectos:</p>
+  <div class="cards two">
+    <div class="card"><h4>Responsabilidad</h4><p>Hacerse cargo de las decisiones tomadas y no tomadas, de las acciones realizadas y omitidas, y de sus consecuencias.</p></div>
+    <div class="card"><h4>Respeto</h4><p>Mostrar consideración por uno mismo, por los demás y por los recursos confiados: personas, dinero, reputación, seguridad y medio ambiente.</p></div>
+    <div class="card"><h4>Equidad</h4><p>Decidir y actuar de manera imparcial y objetiva, sin conflictos de interés, prejuicios ni favoritismos.</p></div>
+    <div class="card"><h4>Honestidad</h4><p>Comprender la verdad y actuar con sinceridad, tanto al comunicar como al actuar.</p></div>
+  </div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>Si te dan un caso, identifica el valor: ocultar un retraso al cliente viola la <b>honestidad</b>; favorecer a un amigo en una licitación viola la <b>equidad</b>; no asumir un error propio viola la <b>responsabilidad</b>.</div>
+</section>
+
+<section id="s3-rol">
+  <h2><span class="n">2</span>Rol del director de proyectos de software</h2>
+  <p>Planifica, lidera, controla y gestiona riesgos. Su objetivo principal es <b>entregar soluciones de software de valor</b>, cumpliendo los objetivos del proyecto, satisfaciendo a los interesados y generando impacto en la organización.</p>
+  <div class="cards two">
+    <div class="card"><h4>Planificación</h4><p>Define objetivos, alcance, recursos y cronograma.</p><ul><li>Alcance, cronograma, recursos, presupuesto</li></ul></div>
+    <div class="card"><h4>Gestión de riesgos</h4><p>Identifica amenazas y establece medidas preventivas.</p><ul><li>Identificación, evaluación, mitigación, contingencia</li></ul></div>
+    <div class="card"><h4>Liderazgo y comunicación</h4><p>Coordina al equipo y facilita la comunicación entre interesados.</p><ul><li>Coordinación, motivación, stakeholders, toma de decisiones</li></ul></div>
+    <div class="card"><h4>Control y calidad</h4><p>Supervisa el desempeño y el cumplimiento de estándares.</p><ul><li>Seguimiento, indicadores, calidad, cumplimiento</li></ul></div>
+  </div>
+  <p>El temario también lo resume en tres capacidades: <b>liderazgo</b>, <b>colaboración</b> e <b>inteligencia social</b>.</p>
+</section>
+
+<section id="s3-diversidad">
+  <h2><span class="n">3</span>Diversidad cultural en equipos</h2>
+  <div class="def"><b>Diversidad cultural:</b> existencia de diferentes culturas dentro de una organización; implica incluir distintas perspectivas culturales en ella.</div>
+  <h3>Cuatro dimensiones de la diversidad</h3>
+  <div class="cards two">
+    <div class="card"><h4>Cognitiva</h4><p>Formaciones variadas (STEM, diseño, humanidades) amplían las soluciones posibles y reducen el pensamiento de grupo.</p><p><span class="tag ok">Mejora</span>calidad de las decisiones técnicas</p></div>
+    <div class="card"><h4>Idiomática y cultural</h4><p>Distintos idiomas y estilos de comunicación obligan a documentar de forma más explícita.</p><p><span class="tag ok">Mejora</span>claridad de la documentación</p></div>
+    <div class="card"><h4>Generacional y de género</h4><p>Amplía el rango de usuarios para los que el producto es diseñable y testeable desde el inicio.</p><p><span class="tag ok">Mejora</span>alcance al usuario final</p></div>
+    <div class="card"><h4>Geográfica y horaria</h4><p>Varias zonas horarias permiten cobertura continua, revisión de código permanente y resiliencia.</p><p><span class="tag ok">Mejora</span>velocidad de entrega</p></div>
+  </div>
+  <h3>Prácticas operativas</h3>
+  <ul>
+    <li><b>Reclutamiento</b> con paneles diversos y criterios validados contra sesgos inconscientes.</li>
+    <li><b>Rituales interculturales</b> documentados, con facilitadores rotativos y traducción cuando haga falta.</li>
+    <li><b>Comunicación asíncrona</b> por defecto, con horarios compartidos protegidos para decisiones críticas.</li>
+  </ul>
+</section>
+
+<section id="s3-equipo">
+  <h2><span class="n">4</span>Conformación del equipo de trabajo</h2>
+  <p>La gestión del equipo es un ciclo: diseñar, desarrollar, analizar y evaluar. Además, hoy se usan <b>modelos híbridos</b> que combinan la gestión tradicional con la ágil.</p>
+  <div class="cards two">
+    <div class="card"><h4>Equipo interdisciplinario</h4><ul>
+      <li>Personalidad que influya positivamente</li>
+      <li>Comunicación sobresaliente</li>
+      <li>Visión de negocio y liderazgo</li>
+      <li>Apoyo en la estrategia del proyecto</li>
+      <li>Capacidad de proponer mejoras</li>
+      <li>Aceptar retroalimentación</li>
+      <li>Entender que el logro es de todo el equipo: no vale culpar a un integrante</li></ul></div>
+    <div class="card"><h4>Equipo de élite</h4><ul>
+      <li>Auto-administrarse</li>
+      <li>Auto-motivarse</li>
+      <li>Apoyarse mutuamente para lograr las metas</li>
+      <li>Aceptar críticas</li>
+      <li>Proponer mejoras y áreas de oportunidad</li></ul></div>
+  </div>
+  <h3>Roles típicos de un proyecto de software</h3>
+  <div class="flow"><span><b>Líder de proyecto</b> (p. ej. Scrum Master)</span><span>Analista de sistemas</span><span>Arquitecto de software</span><span>Analista programador</span><span>Programador</span><span>Desarrollador móvil</span><span>Tester</span></div>
+  <h3>¿Cuánto tarda cubrir un puesto?</h3>
+  <p>Depende de la <b>disponibilidad</b> de candidatos en el mercado y de lo <b>complejo</b> que sea el perfil:</p>
+  <div class="scroll"><table class="compact">
+    <tr><th>Disponibilidad</th><th class="c">Perfil sencillo</th><th class="c">Perfil complejo</th></tr>
+    <tr><td>Alta</td><td class="c">2 a 5 días</td><td class="c">5 a 10 días</td></tr>
+    <tr><td>Media</td><td class="c" colspan="2">3 a 8 días</td></tr>
+    <tr><td>Baja</td><td class="c">15 días</td><td class="c">30 días</td></tr>
+  </table></div>
+  <h3>Herramientas colaborativas</h3>
+  <p>Tableros digitales y repositorios para trabajar en equipo. En el curso se mencionan Jira, Trello, Asana y MS Project; para el repositorio de trabajo es común usar GitHub o una carpeta compartida.</p>
+</section>
+
+<section id="s3-ley">
+  <h2><span class="n">5</span>Inclusión: Ley 29973</h2>
+  <p>La <b>Ley General de la Persona con Discapacidad (Ley 29973)</b> es la referencia de esta sesión. La idea central: cualquier persona puede formar parte de un equipo de proyecto de alto rendimiento.</p>
+  <p>Una de las conclusiones de la clase es que las personas con discapacidad suelen aportar mucho valor, porque desarrollan habilidades que en muchos casos el resto del personal no tiene.</p>
+  <div class="note"><strong class="t">Verifica en el texto de la ley</strong>Las diapositivas no detallan capítulos ni artículos. Si te preguntan contenido específico (por ejemplo, la cuota de empleo, que según el art. 49 es de 5% en el sector público y 3% en empresas privadas con más de 50 trabajadores), confírmalo con el capítulo que trabajó tu grupo.</div>
+  <h3>Conclusiones de la sesión</h3>
+  <ul>
+    <li>Un jefe de proyectos necesita conocer diversas actividades de gestión.</li>
+    <li>No basta con conocer las herramientas: hay que saber cómo aplicarlas.</li>
+    <li>Las personas con discapacidad desarrollan habilidades valiosas para el equipo.</li>
+  </ul>
+</section>
+
+
+<section id="s3-tuckman">
+  <h2><span class="n">6</span>Desarrollo del equipo: modelo de Tuckman</h2>
+  <div class="note"><strong class="t">Complemento del PMBOK</strong>El PMBOK usa este modelo para explicar cómo un grupo se convierte en equipo de alto desempeño.</div>
+  <div class="cards">
+    <div class="card"><h4>1. Formación</h4><p>Se conocen, roles poco claros, dependen del líder.</p></div>
+    <div class="card"><h4>2. Turbulencia (tormenta)</h4><p>Aparecen conflictos y diferencias de opinión. El líder debe mediar.</p></div>
+    <div class="card"><h4>3. Normalización</h4><p>Se acuerdan reglas y formas de trabajo; crece la confianza.</p></div>
+    <div class="card"><h4>4. Desempeño</h4><p>Equipo maduro, interdependiente y eficiente: es el <b>alto desempeño</b>.</p></div>
+    <div class="card"><h4>5. Disolución</h4><p>Se termina el trabajo y se libera al personal.</p></div>
+  </div>
+  <h3>Qué hace alto desempeño a un equipo</h3>
+  <ul>
+    <li>Comunicación abierta y efectiva.</li>
+    <li>Confianza mutua y sentido de pertenencia.</li>
+    <li>Objetivos claros y compartidos.</li>
+    <li>Toma de decisiones colaborativa y manejo constructivo de conflictos.</li>
+    <li>Reconocimiento del trabajo bien hecho.</li>
+  </ul>
+</section>
+
+<section id="s3-conflictos">
+  <h2><span class="n">7</span>Manejo de conflictos</h2>
+  <p>El conflicto es inevitable en equipos diversos. Técnicas según el PMBOK:</p>
+  <div class="scroll"><table class="compact">
+    <tr><th>Técnica</th><th>En qué consiste</th></tr>
+    <tr><td>Retirarse / eludir</td><td>Postergar o evitar el conflicto</td></tr>
+    <tr><td>Suavizar / acomodar</td><td>Resaltar los acuerdos y ceder en puntos</td></tr>
+    <tr><td>Conciliar / consenso</td><td>Cada parte cede algo (todos pierden un poco)</td></tr>
+    <tr><td>Forzar / dirigir</td><td>Imponer una solución (gana uno, pierde otro)</td></tr>
+    <tr><td>Colaborar / resolver el problema</td><td>Integrar puntos de vista buscando la mejor solución: <b>la más efectiva</b></td></tr>
+  </table></div>
+  <h3>Habilidades interpersonales del director</h3>
+  <div class="flow"><span>Inteligencia emocional</span><span>Negociación</span><span>Influencia</span><span>Escucha activa</span><span>Motivación</span><span>Toma de decisiones</span></div>
+</section>
+
+<section id="s3-herramientas">
+  <h2><span class="n">8</span>Herramientas colaborativas</h2>
+  <div class="scroll"><table class="compact">
+    <tr><th>Necesidad</th><th>Herramientas</th></tr>
+    <tr><td>Tableros de tareas</td><td>Trello, Jira, Asana, Planner</td></tr>
+    <tr><td>Comunicación</td><td>Teams, Slack, Google Meet, WhatsApp</td></tr>
+    <tr><td>Repositorio de código</td><td>GitHub, GitLab, Bitbucket</td></tr>
+    <tr><td>Documentos compartidos</td><td>Google Drive, OneDrive, SharePoint, Notion</td></tr>
+    <tr><td>Pizarras y diagramas</td><td>Miro, FigJam, draw.io</td></tr>
+    <tr><td>Cronograma</td><td>MS Project, ProjectLibre, GanttProject</td></tr>
+  </table></div>
+  <p>El caso práctico de la sesión pedía conformar el equipo, definir perfiles de puestos, elegir herramientas y crear el <b>repositorio de trabajo</b> del grupo.</p>
+</section>
+
+<section id="s3-preguntas" class="quiz">
+  <h2>Preguntas de repaso</h2>
+  <details><summary>¿Cuáles son los cuatro valores del código de ética del PMI?</summary><div class="ans"><p>Responsabilidad, respeto, equidad y honestidad.</p></div></details>
+  <details><summary>Un director acepta un regalo de un proveedor que compite en una licitación. ¿Qué valor está en riesgo?</summary><div class="ans"><p>Equidad: hay conflicto de interés y se pierde la imparcialidad.</p></div></details>
+  <details><summary>Menciona las cuatro funciones del rol del director de proyectos de software.</summary><div class="ans"><p>Planificación, gestión de riesgos, liderazgo y comunicación, y control y calidad.</p></div></details>
+  <details><summary>Nombra las cuatro dimensiones de la diversidad y un beneficio de cada una.</summary><div class="ans"><p>Cognitiva (mejores decisiones técnicas), idiomática y cultural (documentación más clara), generacional y de género (producto para más usuarios), geográfica y horaria (entrega continua).</p></div></details>
+  <details><summary>¿Qué diferencia a un equipo de élite?</summary><div class="ans"><p>Se auto-administra, se auto-motiva, sus miembros se apoyan, aceptan críticas y proponen mejoras.</p></div></details>
+  <details><summary>Necesitas un arquitecto de software con experiencia en un nicho poco común. ¿Cuánto podría tardar cubrir el puesto?</summary><div class="ans"><p>Es perfil complejo con baja disponibilidad: alrededor de 30 días.</p></div></details>
+
+  <details><summary>¿En qué etapa de Tuckman aparecen los conflictos?</summary><div class="ans"><p>En la de turbulencia (tormenta).</p></div></details>
+  <details><summary>¿Cuál es la técnica de resolución de conflictos más efectiva?</summary><div class="ans"><p>Colaborar / resolver el problema, porque busca una solución que integre los puntos de vista.</p></div></details>
+  <details><summary>Si el director impone su decisión sin escuchar, ¿qué técnica usa?</summary><div class="ans"><p>Forzar / dirigir.</p></div></details>
+</section>
+<nav class="pager" aria-label="Secciones"><a href="#s2"><small>Anterior</small><b>Semana 2</b></a><a class="next" href="#s4"><small>Siguiente</small><b>Semana 4: Iniciando el proyecto</b></a></nav></div><div class="week-panel" id="s4">
+<header class="hero">
+  <span class="week">Semana 4</span>
+  <h1>Iniciando el proyecto</h1>
+  <p class="logro"><b>Logro de la sesión</b>Desarrollar el inicio de un proyecto y planificar el alcance y los recursos, para entender la importancia de la planificación inicial.</p>
+</header>
+<nav class="toc" aria-label="Temas de la semana">
+  <a href="#s4-metodologia">Metodología</a><a href="#s4-alcance">Alcance</a><a href="#s4-requisitos">Requisitos</a><a href="#s4-edt">EDT</a><a href="#s4-tipos">Tipos de EDT</a><a href="#s4-recursos">Recursos</a><a href="#s4-raci">RACI</a><a href="#s4-acta">Acta</a><a href="#s4-procesos-alcance">Procesos de alcance</a><a href="#s4-recopilar">Recopilar requisitos</a><a href="#s4-lb-alcance">Línea base</a><a href="#s4-poder-interes">Interesados</a><a href="#s4-preguntas">Preguntas</a>
+</nav>
+
+<section id="s4-metodologia">
+  <h2><span class="n">1</span>Planificar la metodología</h2>
+  <p>Cruza las 10 áreas de conocimiento con los 5 grupos de procesos (Inicio, Planificación, Ejecución, Monitoreo y control, Cierre). Una X indica que el área tiene procesos en ese grupo.</p>
+  <div class="scroll"><table class="compact">
+    <tr><th>Área</th><th class="c">Ini.</th><th class="c">Plan.</th><th class="c">Ejec.</th><th class="c">Ctrl.</th><th class="c">Cierre</th></tr>
+    <tr><td>Integración</td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td></tr>
+    <tr><td>Alcance</td><td></td><td class="c x">X</td><td></td><td class="c x">X</td><td></td></tr>
+    <tr><td>Tiempo</td><td></td><td class="c x">X</td><td></td><td class="c x">X</td><td></td></tr>
+    <tr><td>Costos</td><td></td><td class="c x">X</td><td></td><td class="c x">X</td><td></td></tr>
+    <tr><td>Calidad</td><td></td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td></td></tr>
+    <tr><td>RR. HH.</td><td></td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td></td></tr>
+    <tr><td>Comunicaciones</td><td></td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td></td></tr>
+    <tr><td>Riesgos</td><td></td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td></td></tr>
+    <tr><td>Adquisiciones</td><td></td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td></td></tr>
+    <tr><td>Stakeholders</td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td class="c x">X</td><td></td></tr>
+  </table></div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>Solo <b>Integración</b> está en los 5 grupos. Solo Integración y <b>Stakeholders</b> tienen procesos de <b>Inicio</b>. Alcance, Tiempo y Costos no tienen procesos de ejecución. Todas las áreas están en Planificación y Control.</div>
+</section>
+
+<section id="s4-alcance">
+  <h2><span class="n">2</span>Planificar y gestionar el alcance</h2>
+  <div class="def"><b>Gestión del alcance:</b> proceso que define <b>qué trabajo se realizará</b> y asegura que se haga <b>ese trabajo y solo ese trabajo</b>.</div>
+  <div class="cards two">
+    <div class="card"><h4>Alcance del producto</h4><p>Características y funciones que tendrá el producto, servicio o resultado.</p></div>
+    <div class="card"><h4>Alcance del proyecto</h4><p>Todo el trabajo necesario para entregar ese producto con las características indicadas.</p></div>
+  </div>
+  <h3>Planificar la gestión del alcance</h3>
+  <div class="cards">
+    <div class="card"><h4>Entradas</h4><ul><li>Acta de constitución (Project Charter)</li><li>Plan para la dirección del proyecto</li><li>FAE</li><li>APO</li></ul></div>
+    <div class="card"><h4>Herramientas y técnicas</h4><ul><li>Juicio de expertos</li><li>Análisis de datos (análisis de alternativas)</li><li>Reuniones</li></ul></div>
+    <div class="card"><h4>Salidas</h4><ul><li>Plan para la gestión del alcance</li><li>Plan de gestión de requisitos</li></ul></div>
+  </div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>Este proceso tiene <b>dos salidas</b>: el plan de gestión del alcance <b>y</b> el plan de gestión de requisitos. Es fácil olvidar la segunda.</div>
+</section>
+
+<section id="s4-requisitos">
+  <h2><span class="n">3</span>Identificar la lista de requisitos</h2>
+  <p>Cada requisito funcional lleva un código, su descripción y el rol que lo usa. Ejemplo de clase (sistema de inventario):</p>
+  <div class="scroll"><table class="compact">
+    <tr><th>Ref.</th><th>Función</th><th>Rol</th></tr>
+    <tr><td>FR1</td><td>Permitir crear categorías para clasificar productos</td><td>Administrador</td></tr>
+    <tr><td>FR2</td><td>Registrar productos con su categoría y descripción</td><td>Administrador</td></tr>
+    <tr><td>FR3</td><td>No permitir productos con el mismo código de referencia</td><td>Administrador</td></tr>
+    <tr><td>FR7</td><td>Generar y almacenar reportes de ingreso y salida</td><td>Administrador</td></tr>
+    <tr><td>FR8</td><td>Generar un informe quincenal de todos los reportes</td><td>Usuario</td></tr>
+    <tr><td>FR10</td><td>Mostrar el producto que más rota y el que menos</td><td>Administrador</td></tr>
+  </table></div>
+  <p class="scroll-hint">Extracto; la diapositiva tiene FR1 a FR12.</p>
+</section>
+
+<section id="s4-edt">
+  <h2><span class="n">4</span>Definición de actividades y EDT</h2>
+  <div class="def"><b>Definir actividades:</b> identificar y documentar el trabajo planificado. Se parte de los entregables del <b>nivel más bajo de la EDT</b> (paquetes de trabajo). Es la base para estimar, hacer el cronograma, ejecutar, supervisar y controlar.</div>
+  <div class="def"><b>EDT (Estructura de Desglose del Trabajo) o WBS:</b> descomposición jerárquica del trabajo total del proyecto en partes cada vez más pequeñas y manejables.</div>
+  <h3>Ejemplo de clase: Casa de campo</h3>
+  <ul class="tree">
+    <li><span class="nd hl">Casa de campo</span>
+      <ul>
+        <li><span class="nd">1. Estudio</span></li>
+        <li><span class="nd">2. Diseño</span><ul><li><span class="nd">2.1 Maqueta</span></li><li><span class="nd">2.2 Planos</span></li></ul></li>
+        <li><span class="nd">3. Construcción</span>
+          <ul>
+            <li><span class="nd hl">3.1 Afirmado</span>
+              <ul>
+                <li><span class="nd">3.1.1 Planos revisados</span></li>
+                <li><span class="nd">3.1.2 Área inspeccionada</span></li>
+                <li><span class="nd hl">3.1.3 Terreno limpio</span>
+                  <ul>
+                    <li><span class="nd act">a1 Alquilar equipo de limpieza</span></li>
+                    <li><span class="nd act">a2 Alquilar volquete de 10 t</span></li>
+                    <li><span class="nd act">a3 Contratar capataz y cuadrilla</span></li>
+                    <li><span class="nd act">a4 Comprar materiales de limpieza</span></li>
+                    <li><span class="nd act">a5 Transportar materiales y equipos</span></li>
+                    <li><span class="nd act">a6 Acumular maleza en zona de acceso</span></li>
+                    <li><span class="nd act">a7 Acumular desperdicios en zona de acceso</span></li>
+                    <li><span class="nd act">a8 Retirar maleza</span></li>
+                    <li><span class="nd act">a9 Retirar desperdicios</span></li>
+                  </ul></li>
+                <li><span class="nd">3.1.4 Terreno nivelado</span></li>
+                <li><span class="nd">3.1.5 Excavación para cimientos</span></li>
+                <li><span class="nd">3.1.6 Afirmado para cimientos</span></li>
+              </ul></li>
+            <li><span class="nd">3.2 Áreas de descanso</span></li>
+            <li><span class="nd">3.3 Áreas de recreación</span></li>
+            <li><span class="nd">3.4 Habilitación de otras áreas</span></li>
+          </ul></li>
+        <li><span class="nd">4. Acabados</span></li>
+        <li><span class="nd">5. Gestión</span><ul><li><span class="nd">5.1 Planeamiento</span></li><li><span class="nd">5.2 Control</span></li></ul></li>
+      </ul></li>
+  </ul>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>La EDT contiene <b>entregables</b> (sustantivos: "terreno limpio"). Las <b>actividades</b> (verbos: "retirar maleza") salen de descomponer los paquetes de trabajo y van a la lista de actividades. Este mismo ejemplo se usa en la semana 5 para la ruta crítica.</div>
+</section>
+
+<section id="s4-tipos">
+  <h2><span class="n">5</span>Tipos de EDT</h2>
+  <div class="cards">
+    <div class="card"><h4>Basada en paquetes de trabajo</h4><p>Descompone por niveles numerados hasta llegar a paquetes concretos.</p><p>Ejemplo: Sistema de gestión de valor → 1.1 Evaluación de necesidades → 1.1.1 Auditoría del sistema actual → 1.1.1.1 Identificación de componentes.</p></div>
+    <div class="card"><h4>Organizada por fases</h4><p>El segundo nivel son las fases del ciclo de vida.</p><p>Ejemplo: Producto de software v5.0 → Dirección de proyectos, Requisitos, Diseño detallado, Construir, Integración y prueba. Cada fase entrega software, documentación de usuario y material de capacitación.</p></div>
+    <div class="card"><h4>Basada en entregables principales</h4><p>El segundo nivel son los grandes entregables del producto.</p><p>Ejemplo: Sistema de aeronave → Vehículo aéreo, Capacitación, Datos, Equipos de apoyo, Instalaciones, Prueba y evaluación, Dirección de proyectos.</p></div>
+  </div>
+</section>
+
+<section id="s4-recursos">
+  <h2><span class="n">6</span>Planificar y gestionar los recursos</h2>
+  <div class="def"><b>Planificar recursos:</b> determinar los roles, responsabilidades y relaciones de informe (líneas de reporte) y elaborar el plan de recursos humanos.</div>
+  <p>El plan de RR. HH. define cuándo y cómo se cumplirán los requisitos de personal: adquisición, horarios, salida del personal, reconocimientos y recompensas, seguridad, etc.</p>
+  <p>En el organigrama, cada puesto se describe con: <b>rol</b>, <b>responsabilidad</b> y <b>autoridad</b>.</p>
+  <h3>Salidas del proceso</h3>
+  <div class="cards two">
+    <div class="card"><h4>Plan de recursos humanos</h4><p>El documento general.</p></div>
+    <div class="card"><h4>Adquisición de RR. HH.</h4><p>Cómo se conseguirá al personal.</p></div>
+    <div class="card"><h4>Calendario de recursos</h4><p>Se representa con un <b>histograma de recursos</b>.</p></div>
+    <div class="card"><h4>Plan de liberación de personal</h4><p>Método y momento para liberar a los miembros; beneficia al proyecto y a ellos.</p></div>
+    <div class="card"><h4>Necesidades de formación</h4><p>Plan de capacitación si el personal asignado no tiene las competencias.</p></div>
+    <div class="card"><h4>Reconocimiento y recompensas</h4><p>Basados en el desempeño, con tiempos establecidos para que no se olviden.</p></div>
+  </div>
+</section>
+
+<section id="s4-raci">
+  <h2><span class="n">7</span>Matriz RACI</h2>
+  <p>La <b>RAM</b> (Matriz de Asignación de Responsabilidades) conecta el trabajo con los miembros del equipo. La <b>RACI</b> es un tipo de RAM:</p>
+  <div class="cards two">
+    <div class="card"><h4>R: Responsable</h4><p>Ejecuta el trabajo.</p></div>
+    <div class="card"><h4>A: Accountable</h4><p>Rinde cuentas; aprueba y responde por el resultado.</p></div>
+    <div class="card"><h4>C: Consultado</h4><p>Se le pide opinión antes o durante.</p></div>
+    <div class="card"><h4>I: Informado</h4><p>Se le comunica el avance o resultado.</p></div>
+  </div>
+  <div class="scroll"><table class="compact">
+    <tr><th>Entregable</th><th class="c">Rol 1</th><th class="c">Rol 2</th><th class="c">Rol 3</th><th class="c">Rol 4</th><th class="c">Rol 5</th></tr>
+    <tr><td>Definir</td><td class="c">I</td><td class="c x">A</td><td class="c">R</td><td class="c">I</td><td class="c">I</td></tr>
+    <tr><td>Diseñar</td><td class="c x">A</td><td class="c">I</td><td class="c">I</td><td class="c">R</td><td class="c">C</td></tr>
+    <tr><td>Desarrollar</td><td class="c x">A</td><td class="c">C</td><td class="c">R</td><td class="c">C</td><td class="c">I</td></tr>
+    <tr><td>Probar</td><td class="c x">A</td><td class="c">I</td><td class="c">R</td><td class="c">C</td><td class="c">R</td></tr>
+  </table></div>
+  <p>Otro ejemplo de clase (actualización de software): el <b>programador</b> es R, el <b>analista programador</b> es A, el <b>cliente y proveedores</b> son C y el <b>director del proyecto</b> es I.</p>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>En español "Responsable" se confunde: <b>R</b> es quien <b>ejecuta</b> y <b>A</b> quien <b>rinde cuentas</b>. Como buena práctica, cada entregable tiene <b>una sola A</b>; puede haber varias R (como en "Probar").</div>
+  <h3>Conclusiones de la sesión</h3>
+  <ul>
+    <li>Los costos son clave: el cliente siempre quiere ver cómo se ejecuta el gasto.</li>
+    <li>Los recursos humanos son el elemento más sensible del proyecto.</li>
+    <li>Lo que más control requiere es la triple restricción: alcance, tiempo y costos.</li>
+  </ul>
+</section>
+
+
+<section id="s4-acta">
+  <h2><span class="n">8</span>Acta de constitución (Project Charter)</h2>
+  <div class="def"><b>Acta de constitución:</b> documento emitido por el <b>patrocinador</b> que <b>autoriza formalmente</b> el proyecto y da al director la autoridad para usar recursos. Es la primera entrada de casi toda la planificación.</div>
+  <p>Contenido típico:</p>
+  <ul>
+    <li>Propósito y justificación del proyecto.</li>
+    <li>Objetivos medibles y criterios de éxito.</li>
+    <li>Requisitos y descripción de alto nivel.</li>
+    <li>Riesgos principales y supuestos.</li>
+    <li>Resumen de hitos y presupuesto preliminar.</li>
+    <li>Interesados clave.</li>
+    <li>Director asignado, su nivel de autoridad y el patrocinador que firma.</li>
+  </ul>
+</section>
+
+<section id="s4-procesos-alcance">
+  <h2><span class="n">9</span>Los 6 procesos de gestión del alcance</h2>
+  <div class="scroll"><table class="compact">
+    <tr><th>Proceso</th><th>Grupo</th><th>Salida clave</th></tr>
+    <tr><td>1. Planificar la gestión del alcance</td><td>Planificación</td><td>Plan de alcance y de requisitos</td></tr>
+    <tr><td>2. Recopilar requisitos</td><td>Planificación</td><td>Documentación de requisitos y matriz de trazabilidad</td></tr>
+    <tr><td>3. Definir el alcance</td><td>Planificación</td><td>Enunciado del alcance</td></tr>
+    <tr><td>4. Crear la EDT</td><td>Planificación</td><td>Línea base del alcance</td></tr>
+    <tr><td>5. Validar el alcance</td><td>Control</td><td>Entregables aceptados</td></tr>
+    <tr><td>6. Controlar el alcance</td><td>Control</td><td>Solicitudes de cambio</td></tr>
+  </table></div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong><b>Validar</b> el alcance es lograr que el <b>cliente acepte</b> los entregables. <b>Controlar la calidad</b> es verificar que sean correctos, y se hace antes. <b>Controlar</b> el alcance es vigilar que no entre trabajo no aprobado.</div>
+  <div class="cards two">
+    <div class="card"><h4>Scope creep (corrupción del alcance)</h4><p>Cambios que entran sin control formal, sin ajustar tiempo ni costo.</p></div>
+    <div class="card"><h4>Gold plating (chapado en oro)</h4><p>El equipo agrega extras que nadie pidió. También es una mala práctica.</p></div>
+  </div>
+</section>
+
+<section id="s4-recopilar">
+  <h2><span class="n">10</span>Recopilar requisitos</h2>
+  <div class="cards two">
+    <div class="card"><h4>Requisitos funcionales</h4><p>Qué debe <b>hacer</b> el sistema. Ej.: "registrar productos con su categoría" (FR2).</p></div>
+    <div class="card"><h4>Requisitos no funcionales</h4><p>Cómo debe <b>comportarse</b>: rendimiento, seguridad, usabilidad, disponibilidad. Ej.: "responder en menos de 2 segundos".</p></div>
+  </div>
+  <h3>Técnicas</h3>
+  <div class="flow"><span>Entrevistas</span><span>Grupos focales</span><span>Talleres</span><span>Cuestionarios y encuestas</span><span>Observación</span><span>Prototipos</span><span>Benchmarking</span><span>Tormenta de ideas</span><span>Historias de usuario</span></div>
+  <h3>Matriz de trazabilidad de requisitos</h3>
+  <p>Tabla que vincula cada requisito con su origen (quién lo pidió), con el entregable que lo cumple y con la prueba que lo verifica. Sirve para asegurar que cada requisito aporte valor y se entregue.</p>
+  <h3>Historia de usuario</h3>
+  <p>Formato ágil: <b>Como</b> [rol] <b>quiero</b> [función] <b>para</b> [beneficio]. Ej.: "Como administrador quiero ver el producto que más rota para planificar compras".</p>
+</section>
+
+<section id="s4-lb-alcance">
+  <h2><span class="n">11</span>Línea base del alcance y reglas de la EDT</h2>
+  <div class="def"><b>Línea base del alcance</b> = enunciado del alcance + EDT + diccionario de la EDT (versión aprobada).</div>
+  <div class="cards">
+    <div class="card"><h4>Enunciado del alcance</h4><p>Descripción del alcance del producto, entregables, criterios de aceptación y <b>exclusiones</b> (lo que no se hará).</p></div>
+    <div class="card"><h4>Paquete de trabajo</h4><p>Nivel más bajo de la EDT; ahí se estima costo y duración.</p></div>
+    <div class="card"><h4>Diccionario de la EDT</h4><p>Detalle de cada componente: descripción, responsable, hitos, costo, criterios de aceptación.</p></div>
+    <div class="card"><h4>Regla del 100%</h4><p>La EDT incluye todo el trabajo del proyecto, y cada nivel suma el 100% de su nivel superior.</p></div>
+  </div>
+</section>
+
+<section id="s4-poder-interes">
+  <h2><span class="n">12</span>Identificar interesados: matriz poder e interés</h2>
+  <p>Stakeholders es una de las dos áreas con procesos de Inicio. Se clasifica a los interesados así:</p>
+  <div class="scroll"><table class="compact">
+    <tr><th></th><th>Interés bajo</th><th>Interés alto</th></tr>
+    <tr><td><b>Poder alto</b></td><td>Mantener satisfecho</td><td>Gestionar de cerca</td></tr>
+    <tr><td><b>Poder bajo</b></td><td>Monitorear</td><td>Mantener informado</td></tr>
+  </table></div>
+</section>
+
+<section id="s4-preguntas" class="quiz">
+  <h2>Preguntas de repaso</h2>
+  <details><summary>¿Qué área de conocimiento tiene procesos en los 5 grupos?</summary><div class="ans"><p>Integración.</p></div></details>
+  <details><summary>¿Qué áreas tienen procesos en el grupo de Inicio?</summary><div class="ans"><p>Integración (acta de constitución) y Stakeholders (identificar interesados).</p></div></details>
+  <details><summary>Define gestión del alcance.</summary><div class="ans"><p>Definir qué trabajo se realizará y asegurar que se haga ese trabajo y solo ese trabajo.</p></div></details>
+  <details><summary>Diferencia entre alcance del producto y alcance del proyecto.</summary><div class="ans"><p>El del producto son sus características y funciones; el del proyecto es todo el trabajo necesario para entregarlo.</p></div></details>
+  <details><summary>Entradas y salidas de "Planificar la gestión del alcance".</summary><div class="ans"><p>Entradas: acta de constitución, plan para la dirección, FAE y APO. Salidas: plan de gestión del alcance y plan de gestión de requisitos.</p></div></details>
+  <details><summary>¿"Terreno limpio" es entregable o actividad? ¿Y "retirar maleza"?</summary><div class="ans"><p>"Terreno limpio" es un entregable (paquete de trabajo 3.1.3). "Retirar maleza" es una actividad (a8).</p></div></details>
+  <details><summary>Menciona los tres tipos de EDT vistos.</summary><div class="ans"><p>Basada en paquetes de trabajo, organizada por fases y basada en los entregables principales.</p></div></details>
+  <details><summary>¿Qué herramienta representa el calendario de recursos?</summary><div class="ans"><p>El histograma de recursos.</p></div></details>
+  <details><summary>En RACI, ¿cuál es la diferencia entre R y A?</summary><div class="ans"><p>R ejecuta el trabajo; A rinde cuentas y aprueba. Debe haber una sola A por entregable.</p></div></details>
+
+  <details><summary>¿Quién emite el acta de constitución y para qué sirve?</summary><div class="ans"><p>El patrocinador. Autoriza formalmente el proyecto y da autoridad al director para usar recursos.</p></div></details>
+  <details><summary>¿Qué compone la línea base del alcance?</summary><div class="ans"><p>El enunciado del alcance, la EDT y el diccionario de la EDT.</p></div></details>
+  <details><summary>Diferencia entre validar el alcance y controlar la calidad.</summary><div class="ans"><p>Controlar la calidad verifica que el entregable sea correcto; validar el alcance obtiene la aceptación formal del cliente.</p></div></details>
+  <details><summary>"El sistema debe estar disponible 99% del tiempo": ¿funcional o no funcional?</summary><div class="ans"><p>No funcional (disponibilidad).</p></div></details>
+  <details><summary>¿Qué es gold plating?</summary><div class="ans"><p>Agregar funciones o extras que el cliente no pidió.</p></div></details>
+  <details><summary>Un gerente con mucho poder y poco interés en el proyecto: ¿qué estrategia aplicas?</summary><div class="ans"><p>Mantenerlo satisfecho.</p></div></details>
+</section>
+<nav class="pager" aria-label="Secciones"><a href="#s3"><small>Anterior</small><b>Semana 3</b></a><a class="next" href="#s5"><small>Siguiente</small><b>Semana 5: Planificando el proyecto</b></a></nav></div><div class="week-panel" id="s5">
+<header class="hero">
+  <span class="week">Semana 5</span>
+  <h1>Planificando el proyecto</h1>
+  <p class="logro"><b>Logro de la sesión</b>Desarrollar el cronograma y el presupuesto de un proyecto de software, para comprender la importancia de la línea base de costos.</p>
+</header>
+<nav class="toc" aria-label="Temas de la semana">
+  <a href="#s5-cronograma">Cronograma</a><a href="#s5-actividades">Actividades</a><a href="#s5-ruta">Ruta crítica</a><a href="#s5-lineabase">Línea base</a><a href="#s5-costos">Estimar costos</a><a href="#s5-presupuesto">Presupuesto</a><a href="#s5-adaptativa">Adaptativa</a><a href="#s5-cpm">Cálculo CPM</a><a href="#s5-dependencias">Dependencias</a><a href="#s5-compresion">Comprimir</a><a href="#s5-exactitud">Exactitud</a><a href="#s5-valor">Priorizar valor</a><a href="#s5-evm">Valor ganado</a><a href="#s5-preguntas">Preguntas</a>
+</nav>
+
+<section id="s5-cronograma">
+  <h2><span class="n">1</span>Planificar la gestión del cronograma</h2>
+  <div class="cards">
+    <div class="card"><h4>Entradas</h4><ul><li>Acta de constitución</li><li>Plan para la dirección del proyecto</li><li>FAE</li><li>APO</li></ul></div>
+    <div class="card"><h4>Herramientas y técnicas</h4><ul><li>Juicio de expertos</li><li>Análisis de datos</li><li>Reuniones</li></ul></div>
+    <div class="card"><h4>Salida: plan de gestión del cronograma</h4><p>Define el modelo de programación, el nivel de exactitud, las unidades de medida y los umbrales de control.</p></div>
+  </div>
+  <p>Secuencia de trabajo para armar el cronograma:</p>
+  <div class="flow"><span>Definir actividades</span><i>›</i><span>Secuenciar</span><i>›</i><span>Estimar duración</span><i>›</i><span>Desarrollar cronograma</span></div>
+</section>
+
+<section id="s5-actividades">
+  <h2><span class="n">2</span>Definición de las actividades</h2>
+  <div class="cards">
+    <div class="card"><h4>Plantillas</h4><p>Una lista estándar de actividades puede reutilizarse. Sus atributos pueden incluir: habilidades de los recursos, horas de esfuerzo, riesgos identificados y entregables esperados.</p></div>
+    <div class="card"><h4>Planificación gradual</h4><p>Elaboración progresiva: lo de <b>corto plazo</b> se planifica en detalle y lo de <b>largo plazo</b> se deja a un nivel alto de la EDT.</p></div>
+    <div class="card"><h4>Hidden work</h4><p>Entregables y actividades que <b>no están en la EDT ni en la lista de actividades</b>, pero que son necesarios para completar el proyecto.</p></div>
+  </div>
+</section>
+
+<section id="s5-ruta">
+  <h2><span class="n">3</span>Secuenciar, estimar y ruta crítica</h2>
+  <p>Se usa el paquete 3.1.3 Terreno limpio de la semana 4. Las cuatro primeras actividades deben terminar antes de transportar; luego el trabajo se divide en dos ramas.</p>
+  <svg viewBox="0 0 340 430" role="img" aria-label="Diagrama de red de la actividad terreno limpio con la ruta crítica resaltada" style="display:block;margin:12px auto;max-width:420px;font-family:inherit">
+    <defs><marker id="s5-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--muted)"/></marker>
+    <marker id="s5-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="var(--red)"/></marker></defs>
+    <g font-size="12" fill="var(--ink)">
+      <!-- fila inicial -->
+      <rect x="4" y="6" width="76" height="54" rx="7" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="42" y="28" text-anchor="middle">Alquilar</text><text x="42" y="43" text-anchor="middle">equipo (3d)</text>
+      <rect x="88" y="6" width="76" height="54" rx="7" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="126" y="28" text-anchor="middle">Comprar</text><text x="126" y="43" text-anchor="middle">materiales (1d)</text>
+      <rect x="172" y="6" width="76" height="54" rx="7" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="210" y="28" text-anchor="middle">Contratar</text><text x="210" y="43" text-anchor="middle">cuadrilla (1d)</text>
+      <rect x="254" y="6" width="84" height="54" rx="7" fill="var(--red-bg)" stroke="var(--red)" stroke-width="2.5"/>
+      <text x="296" y="28" text-anchor="middle" font-weight="700">Alquilar</text><text x="296" y="43" text-anchor="middle" font-weight="700">volquete (3d)</text>
+      <!-- flechas a transporte -->
+      <path d="M42,60 L150,142" stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <path d="M126,60 L160,140" stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <path d="M210,60 L180,140" stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <path d="M296,60 L192,142" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#arr)"/>
+      <!-- transporte -->
+      <rect x="95" y="146" width="150" height="54" rx="7" fill="var(--red-bg)" stroke="var(--red)" stroke-width="2.5"/>
+      <text x="170" y="168" text-anchor="middle" font-weight="700">Transportar equipos</text><text x="170" y="184" text-anchor="middle" font-weight="700">y materiales (1d)</text>
+      <!-- ramas -->
+      <path d="M140,200 L80,256" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#arr)"/>
+      <path d="M200,200 L258,256" stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <rect x="10" y="260" width="140" height="54" rx="7" fill="var(--red-bg)" stroke="var(--red)" stroke-width="2.5"/>
+      <text x="80" y="282" text-anchor="middle" font-weight="700">Acumular maleza</text><text x="80" y="298" text-anchor="middle" font-weight="700">3d</text>
+      <rect x="190" y="260" width="140" height="54" rx="7" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="260" y="282" text-anchor="middle">Acumular desperdicios</text><text x="260" y="298" text-anchor="middle">2d</text>
+      <path d="M80,314 L80,356" stroke="var(--red)" stroke-width="3" fill="none" marker-end="url(#arr)"/>
+      <path d="M260,314 L260,356" stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <rect x="10" y="360" width="140" height="54" rx="7" fill="var(--red-bg)" stroke="var(--red)" stroke-width="2.5"/>
+      <text x="80" y="382" text-anchor="middle" font-weight="700">Retirar maleza</text><text x="80" y="398" text-anchor="middle" font-weight="700">2d</text>
+      <rect x="190" y="360" width="140" height="54" rx="7" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/>
+      <text x="260" y="382" text-anchor="middle">Retirar desperdicios</text><text x="260" y="398" text-anchor="middle">1d</text>
+    </g>
+  </svg>
+  <div class="def"><b>Ruta crítica:</b> la secuencia de actividades más larga del diagrama de red. Determina la duración mínima del proyecto; si una actividad crítica se retrasa, se retrasa todo. Sus actividades tienen <b>holgura cero</b>.</div>
+  <p><b>Cómo leer el ejemplo:</b></p>
+  <ul>
+    <li>Rama de maleza tras el transporte: 3 + 2 = <b>5 días</b>. Rama de desperdicios: 2 + 1 = 3 días. La de maleza es la crítica y la de desperdicios tiene <b>2 días de holgura</b>.</li>
+    <li>Antes del transporte, alquilar equipo y alquilar volquete duran 3 días cada uno. En la diapositiva el volquete empieza más tarde (23.12, termina 25.12) y por eso marca el inicio del transporte (26.12): es la actividad crítica.</li>
+    <li>Ruta crítica: volquete (3d), transportar (1d), acumular maleza (3d), retirar maleza (2d) = <b>9 días</b>, del 23.12 al 31.12.</li>
+  </ul>
+  <h3>Tipos de dependencia y elementos del diagrama de Gantt</h3>
+  <div class="cards two">
+    <div class="card"><h4>FS: fin a inicio</h4><p>B empieza cuando termina A. Es la más común (diseñar, luego construir).</p></div>
+    <div class="card"><h4>SS: inicio a inicio</h4><p>B puede empezar cuando empieza A.</p></div>
+    <div class="card"><h4>Hito</h4><p>Evento con <b>duración 0</b>, se dibuja como rombo (por ejemplo, "Completar componente 1").</p></div>
+    <div class="card"><h4>Fecha de corte</h4><p>Línea vertical que marca el día en que se mide el avance.</p></div>
+  </div>
+</section>
+
+<section id="s5-lineabase">
+  <h2><span class="n">4</span>Línea base del cronograma</h2>
+  <div class="def"><b>Línea base del cronograma:</b> versión <b>aprobada</b> del modelo de programación que <b>solo puede cambiarse mediante control de cambios formal</b> y que sirve de <b>base de comparación</b> con los resultados reales. La aceptan y aprueban los interesados.</div>
+  <p>Se puede resumir en un <b>cronograma de hitos</b>: solo los rombos (inicio, componentes completos, integración, fin) sobre los periodos del proyecto.</p>
+</section>
+
+<section id="s5-costos">
+  <h2><span class="n">5</span>Planificar y estimar los costos</h2>
+  <div class="def"><b>Planificar el presupuesto:</b> desarrollar una aproximación del costo de los recursos necesarios para completar cada actividad del cronograma.</div>
+  <h3>Ejemplo de costeo por actividad</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Actividad</th><th>Recurso</th><th class="num">Horas</th><th class="num">Tarifa</th><th class="num">Costo</th></tr>
+    <tr><td rowspan="2">3.1 Puesta de canaletas</td><td>Ing. Redes</td><td class="num">20</td><td class="num">100</td><td class="num">2,000</td></tr>
+    <tr><td>Equipo de instalación</td><td class="num">20</td><td class="num">500</td><td class="num">10,000</td></tr>
+    <tr><td rowspan="2">3.2 Cableado de la red</td><td>Ing. Redes</td><td class="num">15</td><td class="num">80</td><td class="num">1,200</td></tr>
+    <tr><td>Equipo de instalación</td><td class="num">15</td><td class="num">300</td><td class="num">4,500</td></tr>
+    <tr class="total"><td colspan="4">Total (personas 3,200 + equipos 14,500)</td><td class="num">S/ 17,700</td></tr>
+  </table></div>
+  <p class="scroll-hint">Costo = horas × tarifa.</p>
+
+  <h3>Herramientas y técnicas para estimar costos</h3>
+  <div class="cards two">
+    <div class="card"><h4>Juicio de expertos</h4><p>Opinión de personas con experiencia.</p></div>
+    <div class="card"><h4>Estimación análoga</h4><p>Usa costos de proyectos anteriores similares. Rápida, poco precisa.</p></div>
+    <div class="card"><h4>Estimación paramétrica</h4><p>Relación estadística entre variables, por ejemplo <b>Y = 5X + 4</b>.</p></div>
+    <div class="card"><h4>Estimación ascendente</h4><p>Se estima cada paquete de trabajo de la EDT y se <b>suma hacia arriba</b>. La más precisa, pero la más laboriosa.</p></div>
+    <div class="card"><h4>Tres valores (PERT)</h4><p><b>(O + 4MP + P) / 6</b></p></div>
+    <div class="card"><h4>Análisis de datos</h4><p>Análisis de alternativas y costo de la calidad.</p></div>
+    <div class="card"><h4>PMIS</h4><p>Sistema de información para la dirección de proyectos, por ejemplo MS Project.</p></div>
+    <div class="card"><h4>Toma de decisiones</h4><p>Técnica Delphi, tormenta de ideas y otras.</p></div>
+  </div>
+
+  <div class="calc" id="s5-pert">
+    <h4 style="margin:0 0 10px;font-family:'Bricolage Grotesque',sans-serif">Practica la fórmula PERT</h4>
+    <div class="row">
+      <div><label for="s5-o">Optimista (O)</label><input id="s5-o" type="number" inputmode="decimal" value="4"></div>
+      <div><label for="s5-m">Más probable (MP)</label><input id="s5-m" type="number" inputmode="decimal" value="6"></div>
+      <div><label for="s5-p">Pesimista (P)</label><input id="s5-p" type="number" inputmode="decimal" value="14"></div>
+    </div>
+    <output id="s5-pout" for="s5-o s5-m s5-p"></output>
+  </div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>En PERT el valor <b>más probable</b> pesa <b>4 veces</b> y se divide entre <b>6</b>. Con O = 4, MP = 6 y P = 14: (4 + 24 + 14) / 6 = <b>7</b>.</div>
+</section>
+
+<section id="s5-presupuesto">
+  <h2><span class="n">6</span>Determinar el presupuesto</h2>
+  <p>Ejemplo de clase (proyecto de capacitación), usando la columna <b>Total</b>:</p>
+  <div class="scroll"><table class="compact">
+    <tr><th class="num">Cant.</th><th>Descripción</th><th class="num">V. unit.</th><th class="num">Total</th></tr>
+    <tr><td colspan="4"><b>Fase de motivación</b></td></tr>
+    <tr><td class="num">120</td><td>CD con propuestas</td><td class="num">2</td><td class="num">240</td></tr>
+    <tr><td class="num">1</td><td>Proyector</td><td class="num">1,000</td><td class="num">1,000</td></tr>
+    <tr><td class="num">1</td><td>Computador portátil</td><td class="num">1,200</td><td class="num">1,200</td></tr>
+    <tr><td colspan="4"><b>Proceso de capacitación</b></td></tr>
+    <tr><td class="num">5</td><td>Capacitadores</td><td class="num">3,000</td><td class="num">15,000</td></tr>
+    <tr><td class="num">1</td><td>Técnico en informática</td><td class="num">300</td><td class="num">300</td></tr>
+    <tr><td class="num">1</td><td>Comunicador</td><td class="num">400</td><td class="num">400</td></tr>
+    <tr class="total"><td></td><td>Línea base de costos</td><td></td><td class="num">18,140</td></tr>
+    <tr><td></td><td>+ Reserva de contingencia (8%)</td><td></td><td class="num">1,451.20</td></tr>
+    <tr><td></td><td>+ Reserva de gestión (2%)</td><td></td><td class="num">362.80</td></tr>
+    <tr class="total"><td></td><td>Total costos del proyecto</td><td></td><td class="num">19,954</td></tr>
+  </table></div>
+  <div class="cards two">
+    <div class="card"><h4>Reserva de contingencia</h4><p>Para riesgos <b>identificados</b> ("desconocidos conocidos"). La gestiona el director del proyecto.</p></div>
+    <div class="card"><h4>Reserva de gestión</h4><p>Para riesgos <b>no identificados</b> ("desconocidos desconocidos"). La controla la dirección de la organización.</p></div>
+  </div>
+  <div class="note"><strong class="t">Diferencia de terminología</strong>En la diapositiva se llama "línea base" al subtotal <b>antes</b> de reservas. En el PMBOK, la reserva de contingencia forma <b>parte</b> de la línea base de costos, y la reserva de gestión se suma después para obtener el presupuesto total. El resultado final (19,954) es el mismo; si te preguntan, usa la terminología de tu profesor y menciona la del PMBOK si hay espacio. Además, la columna de valor unitario de la diapositiva también se suma (7,562), pero ese número no tiene sentido como costo: el que vale es el de la columna Total.</div>
+</section>
+
+<section id="s5-adaptativa">
+  <h2><span class="n">7</span>Planificación adaptativa</h2>
+  <p>En la gestión ágil la planificación es <b>flexible</b>: se trabaja en <b>iteraciones</b> que entregan <b>producto funcionando</b>, en <b>colaboración</b> con los clientes y con capacidad de <b>adaptación</b>.</p>
+  <h3>Cebolla de planificación ágil</h3>
+  <p>Del horizonte más largo al más corto:</p>
+  <svg viewBox="0 0 300 300" role="img" aria-label="Círculos concéntricos: visión, roadmap, release, iteración y diario" style="display:block;margin:10px auto;max-width:300px">
+    <circle cx="150" cy="150" r="146" fill="#C9B037"/><circle cx="150" cy="168" r="122" fill="#7FA7A8"/>
+    <circle cx="150" cy="186" r="98" fill="#8C7A6B"/><circle cx="150" cy="204" r="74" fill="#8FB48A"/><circle cx="150" cy="222" r="50" fill="#D39A52"/>
+    <g font-weight="700" font-size="15" fill="#fff" text-anchor="middle">
+      <text x="150" y="32">Visión</text><text x="150" y="74">Roadmap</text><text x="150" y="116">Release</text><text x="150" y="158">Iteración</text><text x="150" y="228">Diario</text>
+    </g>
+  </svg>
+  <div class="scroll"><table class="compact">
+    <tr><th>Nivel</th><th>Qué se planifica</th></tr>
+    <tr><td>Visión</td><td>Para qué existe el producto y a quién sirve.</td></tr>
+    <tr><td>Roadmap</td><td>Cómo evolucionará el producto en el tiempo, a grandes rasgos.</td></tr>
+    <tr><td>Release</td><td>Qué conjunto de funciones sale en cada entrega al usuario.</td></tr>
+    <tr><td>Iteración</td><td>Qué se construye en el sprint (2 a 4 semanas).</td></tr>
+    <tr><td>Diario</td><td>Qué hace cada persona hoy (reunión diaria).</td></tr>
+  </table></div>
+  <h3>Ciclo de gestión adaptativa</h3>
+  <div class="flow"><span>Planificar</span><i>›</i><span>Implementar</span><i>›</i><span>Monitorear</span><i>›</i><span>Adaptar</span><i>›</i><span>Planificar…</span></div>
+  <p>Al planificar se consideran el propósito, los recursos y el contexto. Al monitorear se pregunta: ¿qué pasó?, ¿y qué significa?, ¿y ahora qué hacemos?</p>
+  <h3>WIP y políticas explícitas de flujo</h3>
+  <div class="note"><strong class="t">Complemento</strong>Estos temas figuran en el título de la diapositiva pero sin desarrollo. Definición estándar (Kanban): el <b>WIP</b> (trabajo en curso) es la cantidad de tareas que se trabajan a la vez; se le pone un <b>límite</b> por columna para evitar cuellos de botella y terminar antes de empezar algo nuevo. Las <b>políticas explícitas</b> son las reglas visibles del tablero, por ejemplo cuándo una tarea puede pasar a "Hecho" (definición de terminado).</div>
+  <h3>Herramientas del laboratorio</h3>
+  <div class="cards two">
+    <div class="card"><h4>Cronograma</h4><p>MS Project, Jira, Trello.</p></div>
+    <div class="card"><h4>Presupuesto</h4><p>MS Excel, Asana, ProjectManager.</p></div>
+  </div>
+  <h3>Conclusiones de la sesión</h3>
+  <ul>
+    <li>La gestión del cronograma permite sincerar el tiempo real que demora el alcance.</li>
+    <li>La calidad siempre la determina el cliente según lo que necesita.</li>
+    <li>El proyecto también define los estándares o buenas prácticas que garantizan su calidad.</li>
+  </ul>
+</section>
+
+
+<section id="s5-cpm">
+  <h2><span class="n">8</span>Cómo calcular la ruta crítica (CPM)</h2>
+  <p>Se hacen dos pasadas sobre el diagrama de red:</p>
+  <div class="cards two">
+    <div class="card"><h4>Pasada hacia adelante</h4><p><b>IT</b> (inicio temprano) = mayor FT de las predecesoras.<br><b>FT</b> (fin temprano) = IT + duración.</p></div>
+    <div class="card"><h4>Pasada hacia atrás</h4><p><b>FTa</b> (fin tardío) = menor ITa de las sucesoras.<br><b>ITa</b> (inicio tardío) = FTa − duración.</p></div>
+  </div>
+  <div class="def"><b>Holgura total</b> = ITa − IT (o FTa − FT). Si es 0, la actividad es crítica.</div>
+  <h3>Ejemplo resuelto: terreno limpio (empezando en el día 0)</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Act.</th><th class="num">D</th><th class="num">IT</th><th class="num">FT</th><th class="num">ITa</th><th class="num">FTa</th><th class="num">Holg.</th></tr>
+    <tr class="crit"><td>a1 Equipo</td><td class="num">3</td><td class="num">0</td><td class="num">3</td><td class="num">0</td><td class="num">3</td><td class="num">0</td></tr>
+    <tr><td>a4 Materiales</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">2</td></tr>
+    <tr><td>a3 Cuadrilla</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">2</td></tr>
+    <tr class="crit"><td>a2 Volquete</td><td class="num">3</td><td class="num">0</td><td class="num">3</td><td class="num">0</td><td class="num">3</td><td class="num">0</td></tr>
+    <tr class="crit"><td>a5 Transporte</td><td class="num">1</td><td class="num">3</td><td class="num">4</td><td class="num">3</td><td class="num">4</td><td class="num">0</td></tr>
+    <tr class="crit"><td>a6 Acum. maleza</td><td class="num">3</td><td class="num">4</td><td class="num">7</td><td class="num">4</td><td class="num">7</td><td class="num">0</td></tr>
+    <tr><td>a7 Acum. desperd.</td><td class="num">2</td><td class="num">4</td><td class="num">6</td><td class="num">6</td><td class="num">8</td><td class="num">2</td></tr>
+    <tr class="crit"><td>a8 Ret. maleza</td><td class="num">2</td><td class="num">7</td><td class="num">9</td><td class="num">7</td><td class="num">9</td><td class="num">0</td></tr>
+    <tr><td>a9 Ret. desperd.</td><td class="num">1</td><td class="num">6</td><td class="num">7</td><td class="num">8</td><td class="num">9</td><td class="num">2</td></tr>
+  </table></div>
+  <p class="scroll-hint">Filas resaltadas = holgura cero.</p>
+  <div class="note"><strong class="t">Detalle importante</strong>Si todas las actividades iniciales empiezan el mismo día, hay <b>dos rutas críticas</b> de 9 días: una por el alquiler del equipo y otra por el volquete (ambas duran 3 días). En la diapositiva solo se marca la del volquete porque este empieza más tarde en el calendario (23.12). Una ruta con más de una ruta crítica tiene más riesgo.</div>
+</section>
+
+<section id="s5-dependencias">
+  <h2><span class="n">9</span>Dependencias, adelantos y retrasos</h2>
+  <h3>Los 4 tipos de relación lógica (método de precedencia, PDM)</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Tipo</th><th>Significado</th><th>Ejemplo</th></tr>
+    <tr><td><b>FS</b> fin a inicio</td><td>B empieza cuando A termina (la más usada)</td><td>Terminar diseño, luego codificar</td></tr>
+    <tr><td><b>SS</b> inicio a inicio</td><td>B empieza cuando A empieza</td><td>Empezar pruebas al empezar la codificación</td></tr>
+    <tr><td><b>FF</b> fin a fin</td><td>B termina cuando A termina</td><td>Terminar documentación al terminar el desarrollo</td></tr>
+    <tr><td><b>SF</b> inicio a fin</td><td>B termina cuando A empieza (poco usada)</td><td>El sistema antiguo se apaga cuando arranca el nuevo</td></tr>
+  </table></div>
+  <h3>Naturaleza de las dependencias</h3>
+  <div class="cards two">
+    <div class="card"><h4>Obligatoria</h4><p>Por la naturaleza del trabajo o por contrato. No se puede cambiar.</p></div>
+    <div class="card"><h4>Discrecional</h4><p>Por buena práctica; el equipo puede decidir cambiarla.</p></div>
+    <div class="card"><h4>Externa</h4><p>Depende de algo fuera del proyecto (un proveedor, un permiso).</p></div>
+    <div class="card"><h4>Interna</h4><p>Depende de actividades del propio proyecto.</p></div>
+  </div>
+  <div class="cards two">
+    <div class="card"><h4>Adelanto (lead)</h4><p>La sucesora puede <b>adelantarse</b>: empezar antes de que termine la predecesora (FS −2 días).</p></div>
+    <div class="card"><h4>Retraso (lag)</h4><p>Espera obligada entre actividades (FS +3 días, por ejemplo, esperar que seque el concreto).</p></div>
+  </div>
+</section>
+
+<section id="s5-compresion">
+  <h2><span class="n">10</span>Comprimir el cronograma y nivelar recursos</h2>
+  <div class="cards">
+    <div class="card"><h4>Intensificación (crashing)</h4><p>Agregar recursos a actividades de la ruta crítica para acortarlas. <span class="tag bad">Aumenta el costo</span></p></div>
+    <div class="card"><h4>Ejecución rápida (fast tracking)</h4><p>Hacer en paralelo actividades que estaban en secuencia. <span class="tag bad">Aumenta el riesgo</span> y el retrabajo.</p></div>
+    <div class="card"><h4>Nivelación de recursos</h4><p>Ajustar fechas para no sobreasignar a las personas. Puede <b>alargar</b> la ruta crítica.</p></div>
+  </div>
+  <div class="exam"><strong class="t">Ojo en el examen</strong>Para acortar el proyecto solo sirve comprimir actividades de la <b>ruta crítica</b>. Acortar una actividad con holgura no cambia la fecha final.</div>
+</section>
+
+<section id="s5-exactitud">
+  <h2><span class="n">11</span>Procesos de costos y exactitud de estimaciones</h2>
+  <div class="flow"><span>Planificar la gestión de costos</span><i>›</i><span>Estimar costos</span><i>›</i><span>Determinar el presupuesto</span><i>›</i><span>Controlar los costos</span></div>
+  <div class="scroll"><table class="compact">
+    <tr><th>Tipo de estimación</th><th>Cuándo</th><th>Rango</th></tr>
+    <tr><td>Orden de magnitud (ROM)</td><td>Inicio del proyecto</td><td>−25% a +75%</td></tr>
+    <tr><td>Presupuestaria</td><td>Planificación</td><td>−10% a +25%</td></tr>
+    <tr><td>Definitiva</td><td>Con la EDT detallada</td><td>−5% a +10%</td></tr>
+  </table></div>
+  <h3>Desviación estándar en PERT</h3>
+  <p><b>σ = (P − O) / 6</b>. Mide la incertidumbre de la estimación. Con O = 4, MP = 6, P = 14: media 7 y σ = 10/6 ≈ 1.67.</p>
+  <h3>Curva S</h3>
+  <p>Al graficar el costo acumulado de la línea base en el tiempo se obtiene una <b>curva en S</b>: poco gasto al inicio, mucho en la ejecución y poco al cierre.</p>
+</section>
+
+<section id="s5-valor">
+  <h2><span class="n">12</span>Priorización basada en valor</h2>
+  <p>En la planificación adaptativa se construye primero lo que más valor aporta.</p>
+  <div class="cards two">
+    <div class="card"><h4>MoSCoW</h4><p><b>M</b>ust (debe tener), <b>S</b>hould (debería), <b>C</b>ould (podría), <b>W</b>on't (no tendrá esta vez).</p></div>
+    <div class="card"><h4>Valor vs. esfuerzo</h4><p>Primero lo de alto valor y bajo esfuerzo (victorias rápidas); lo de bajo valor y alto esfuerzo se descarta.</p></div>
+    <div class="card"><h4>MVP</h4><p>Producto mínimo viable: la versión más pequeña que aporta valor y permite aprender del usuario.</p></div>
+    <div class="card"><h4>Velocidad</h4><p>Puntos de historia completados por sprint. Sirve para proyectar cuántos sprints faltan: puntos restantes ÷ velocidad.</p></div>
+  </div>
+  <h3>Tablero Kanban con límite WIP</h3>
+  <div class="scroll"><table class="compact">
+    <tr><th>Por hacer</th><th>En curso<br>(WIP 3)</th><th>En pruebas<br>(WIP 2)</th><th>Hecho</th></tr>
+    <tr><td>Reportes</td><td>Login</td><td>Registro de productos</td><td>Categorías</td></tr>
+    <tr><td>Exportar a PDF</td><td>Inventario</td><td></td><td></td></tr>
+  </table></div>
+  <p>Si "En curso" ya tiene 3 tareas, nadie toma una nueva: primero se ayuda a terminar las que están abiertas.</p>
+</section>
+
+<section id="s5-evm">
+  <h2><span class="n">13</span>Valor ganado: para controlar lo planificado</h2>
+  <div class="note"><strong class="t">Complemento del PMBOK</strong>La línea base de costos y del cronograma se usa luego para medir el avance con el valor ganado. Te sirve para entender por qué la línea base es tan importante.</div>
+  <div class="scroll"><table class="compact">
+    <tr><th>Sigla</th><th>Qué es</th></tr>
+    <tr><td><b>PV</b></td><td>Valor planificado: lo que debía haberse hecho a la fecha</td></tr>
+    <tr><td><b>EV</b></td><td>Valor ganado: lo que realmente se hizo, en dinero</td></tr>
+    <tr><td><b>AC</b></td><td>Costo real: lo que se gastó</td></tr>
+    <tr><td><b>CV</b> = EV − AC</td><td>Variación del costo (negativo = sobrecosto)</td></tr>
+    <tr><td><b>SV</b> = EV − PV</td><td>Variación del cronograma (negativo = atraso)</td></tr>
+    <tr><td><b>CPI</b> = EV / AC</td><td>Menor que 1 = gastas más de lo planeado</td></tr>
+    <tr><td><b>SPI</b> = EV / PV</td><td>Menor que 1 = vas atrasado</td></tr>
+  </table></div>
+</section>
+
+<section id="s5-preguntas" class="quiz">
+  <h2>Preguntas de repaso</h2>
+  <details><summary>¿Qué define el plan de gestión del cronograma?</summary><div class="ans"><p>El modelo de programación, el nivel de exactitud, las unidades de medida y los umbrales de control.</p></div></details>
+  <details><summary>¿Qué es la planificación gradual?</summary><div class="ans"><p>Elaboración progresiva: el corto plazo se planifica en detalle y el largo plazo a nivel alto de la EDT.</p></div></details>
+  <details><summary>¿Qué es el hidden work?</summary><div class="ans"><p>Trabajo necesario para completar el proyecto que no está definido en la EDT ni en la lista de actividades.</p></div></details>
+  <details><summary>¿Qué es la ruta crítica y cuánto dura en el ejemplo de terreno limpio?</summary><div class="ans"><p>La secuencia más larga del diagrama de red, con holgura cero. En el ejemplo: volquete 3d + transportar 1d + acumular maleza 3d + retirar maleza 2d = 9 días.</p></div></details>
+  <details><summary>¿Cuánta holgura tiene la rama de desperdicios?</summary><div class="ans"><p>2 días: la rama de maleza dura 5 días y la de desperdicios 3.</p></div></details>
+  <details><summary>¿Qué es la línea base del cronograma?</summary><div class="ans"><p>La versión aprobada del modelo de programación, que solo cambia por control de cambios formal y sirve para comparar con lo real.</p></div></details>
+  <details><summary>Calcula PERT con O = 10, MP = 12, P = 20.</summary><div class="ans"><p>(10 + 48 + 20) / 6 = 78 / 6 = 13.</p></div></details>
+  <details><summary>¿Cuál es la técnica de estimación más precisa y por qué?</summary><div class="ans"><p>La ascendente, porque estima cada paquete de trabajo de la EDT y suma hacia arriba. Es también la que más tiempo toma.</p></div></details>
+  <details><summary>Si la línea base es 50,000, con contingencia de 8% y gestión de 2%, ¿cuál es el total?</summary><div class="ans"><p>50,000 + 4,000 + 1,000 = 55,000 (siguiendo el cálculo de la clase, ambas reservas sobre la línea base).</p></div></details>
+  <details><summary>Diferencia entre reserva de contingencia y de gestión.</summary><div class="ans"><p>La de contingencia cubre riesgos identificados y la maneja el director del proyecto. La de gestión cubre riesgos no identificados y la controla la dirección de la organización.</p></div></details>
+  <details><summary>Ordena la cebolla de planificación de afuera hacia adentro.</summary><div class="ans"><p>Visión, roadmap, release, iteración, diario.</p></div></details>
+
+  <details><summary>¿Cómo se calcula la holgura total?</summary><div class="ans"><p>Inicio tardío − inicio temprano (o fin tardío − fin temprano).</p></div></details>
+  <details><summary>¿Qué dependencia hay entre "apagar el sistema viejo" y "arrancar el nuevo"?</summary><div class="ans"><p>Inicio a fin (SF): el viejo termina cuando el nuevo empieza.</p></div></details>
+  <details><summary>Diferencia entre crashing y fast tracking.</summary><div class="ans"><p>Crashing agrega recursos (sube el costo). Fast tracking hace actividades en paralelo (sube el riesgo).</p></div></details>
+  <details><summary>¿Qué rango tiene una estimación de orden de magnitud?</summary><div class="ans"><p>De −25% a +75%.</p></div></details>
+  <details><summary>Calcula σ con O = 10 y P = 22.</summary><div class="ans"><p>(22 − 10) / 6 = 2.</p></div></details>
+  <details><summary>Si EV = 8,000 y AC = 10,000, ¿cómo va el proyecto?</summary><div class="ans"><p>CPI = 0.8 y CV = −2,000: hay sobrecosto.</p></div></details>
+  <details><summary>¿Qué significa la W en MoSCoW?</summary><div class="ans"><p>Won't: lo que no se incluirá en esta entrega.</p></div></details>
+</section>
+<nav class="pager" aria-label="Secciones"><a href="#s4"><small>Anterior</small><b>Semana 4</b></a><a class="next" href="#s6"><small>Siguiente</small><b>Simulacro de examen</b></a></nav></div><div class="week-panel" id="s6">
+<header class="hero">
+  <span class="week">Simulacro</span>
+  <h1>Pon a prueba lo que sabes</h1>
+  <p class="logro"><b>Cómo funciona</b>22 preguntas de opción múltiple de las cinco semanas. Toca una respuesta: se marca en verde si es correcta y en rojo si no, con la explicación debajo. Tu puntaje se va sumando abajo.</p>
+</header>
+<div id="mcqs"></div>
+<div class="score" aria-live="polite"><span>Aciertos <b id="sc">0</b> / <span id="tot">0</span></span><button type="button" id="reset">Reiniciar</button></div>
+<nav class="pager" aria-label="Secciones"><a href="#s5"><small>Anterior</small><b>Semana 5</b></a></nav></div>
+</main>
+<footer>Resumen elaborado a partir de las diapositivas del curso Administración de Proyectos de Software (UPN), semanas 1 a 5, con complementos marcados del PMBOK 6.ª y 7.ª ed. y La Guía de Scrum 2020.</footer>
+<script>
+(function(){
+ document.documentElement.classList.add('js');
+ var panels=[].slice.call(document.querySelectorAll('.week-panel'));
+ var tabs=[].slice.call(document.querySelectorAll('.gantt a'));
+ function go(){
+  var id=decodeURIComponent(location.hash.slice(1))||'s0';
+  var el=document.getElementById(id);
+  if(!el){el=document.getElementById('s0');}
+  var panel=el.classList.contains('week-panel')?el:el.closest('.week-panel');
+  var idx=panels.indexOf(panel);
+  panels.forEach(function(p){p.classList.toggle('active',p===panel)});
+  tabs.forEach(function(t,i){
+    if(i===idx){t.setAttribute('aria-current','page')}else{t.removeAttribute('aria-current')}
+    t.classList.toggle('done',i>0&&i<idx&&i<6);
+  });
+  var title=panel.querySelector('h1');document.title=(title?title.textContent+' | ':'')+'Guía de repaso APS';
+  if(el===panel){window.scrollTo(0,0)}else{el.scrollIntoView()}
+ }
+ window.addEventListener('hashchange',go);go();
+})();
+</script>
+<script>
+(function(){
+  var o=document.getElementById('s5-o'),m=document.getElementById('s5-m'),p=document.getElementById('s5-p'),out=document.getElementById('s5-pout');
+  function calc(){
+    var O=parseFloat(o.value),M=parseFloat(m.value),P=parseFloat(p.value);
+    if([O,M,P].some(isNaN)){out.textContent='Completa los tres valores.';return;}
+    var r=(O+4*M+P)/6;
+    out.innerHTML='('+O+' + 4×'+M+' + '+P+') / 6 = <b>'+(Math.round(r*100)/100)+'</b>';
+  }
+  [o,m,p].forEach(function(e){e.addEventListener('input',calc)});calc();
+})();
+</script>
+<script>
+(function(){
+var Q=[["S1", "Un proyecto se define como un esfuerzo…", ["Continuo para mantener un servicio", "Temporal para crear un producto, servicio o resultado único", "Permanente de mejora de procesos", "Repetitivo para producir en serie"], 1, "Temporal y con resultado único; lo continuo y repetitivo son operaciones."], ["S1", "¿Cuál NO forma parte de la triple restricción clásica?", ["Alcance", "Tiempo", "Calidad", "Costo"], 2, "Calidad pertenece a la triple restricción extendida, junto con RR. HH. y riesgos."], ["S1", "Una nueva regulación del gobierno que afecta al proyecto es un ejemplo de…", ["APO", "FAE", "Lección aprendida", "Entregable"], 1, "Es una condición que el equipo no controla: factor ambiental."], ["S1", "Varios proyectos relacionados gestionados de forma coordinada forman un…", ["Portafolio", "Programa", "PMO", "Paquete de trabajo"], 1, "El portafolio agrupa por estrategia, aunque no estén relacionados."], ["S2", "En CMMI, el nivel con procesos documentados y estandarizados en toda la organización es el…", ["Nivel 2 Repetible", "Nivel 3 Definido", "Nivel 4 Manejado", "Nivel 5 Optimizado"], 1, "Nivel 3: proceso estándar."], ["S2", "¿Qué institución publica el SWEBOK?", ["PMI", "SEI", "IEEE", "ISO"], 2, "El SWEBOK es del IEEE; el PMBOK es del PMI."], ["S2", "Requisitos que cambian cada semana y usuario disponible para retroalimentar: ¿qué enfoque conviene?", ["Predictivo", "Ágil", "Cascada pura", "Ninguno"], 1, "Ágil reduce el riesgo descubriendo pronto lo que el usuario necesita."], ["S2", "En Scrum, ¿quién gestiona y ordena el Product Backlog?", ["Scrum Master", "Developers", "Product Owner", "Patrocinador"], 2, "El Product Owner maximiza el valor del producto."], ["S3", "Ocultar al cliente un retraso importante viola principalmente el valor de…", ["Respeto", "Honestidad", "Equidad", "Responsabilidad"], 1, "La honestidad exige sinceridad en comunicaciones y conducta."], ["S3", "Etapa de Tuckman en la que surgen conflictos y diferencias:", ["Formación", "Turbulencia", "Normalización", "Desempeño"], 1, "La turbulencia (tormenta) viene justo después de la formación."], ["S3", "La técnica de resolución de conflictos más efectiva es…", ["Forzar", "Eludir", "Colaborar / resolver el problema", "Suavizar"], 2, "Integra los puntos de vista y busca una solución duradera."], ["S4", "¿Qué área de conocimiento tiene procesos en los 5 grupos de procesos?", ["Alcance", "Integración", "Stakeholders", "Riesgos"], 1, "Solo Integración aparece en Inicio, Planificación, Ejecución, Control y Cierre."], ["S4", "Las salidas de Planificar la gestión del alcance son…", ["EDT y diccionario", "Plan de gestión del alcance y plan de gestión de requisitos", "Acta de constitución", "Enunciado del alcance"], 1, "Son dos planes."], ["S4", "El nivel más bajo de la EDT se llama…", ["Actividad", "Hito", "Paquete de trabajo", "Fase"], 2, "Las actividades salen de descomponer los paquetes de trabajo."], ["S4", "En la matriz RACI, la letra A corresponde a quien…", ["Ejecuta la tarea", "Rinde cuentas y aprueba", "Es consultado", "Es informado"], 1, "R ejecuta; A rinde cuentas. Una sola A por entregable."], ["S4", "La línea base del alcance está formada por…", ["Acta + EDT", "Enunciado del alcance + EDT + diccionario de la EDT", "Cronograma + presupuesto", "Requisitos + RACI"], 1, "Es la versión aprobada de esos tres elementos."], ["S5", "PERT con O = 2, MP = 5 y P = 14 da…", ["5", "6", "7", "7.5"], 1, "(2 + 20 + 14) / 6 = 36 / 6 = 6."], ["S5", "Una actividad con holgura cero…", ["Puede retrasarse sin problema", "Está en la ruta crítica", "No tiene predecesoras", "Es un hito"], 1, "Cualquier retraso en ella retrasa todo el proyecto."], ["S5", "Estimar cada paquete de trabajo y sumar hacia arriba es la estimación…", ["Análoga", "Paramétrica", "Ascendente", "Delphi"], 2, "Es la más precisa y la más laboriosa."], ["S5", "Línea base 20,000 con contingencia 8% y gestión 2% (como en clase). El total es…", ["20,400", "21,600", "22,000", "22,400"], 2, "20,000 + 1,600 + 400 = 22,000."], ["S5", "Hacer en paralelo actividades que iban en secuencia se llama…", ["Intensificación", "Ejecución rápida", "Nivelación", "Planificación gradual"], 1, "Fast tracking: acorta el cronograma pero aumenta el riesgo."], ["S5", "Orden correcto de la cebolla de planificación, de afuera hacia adentro:", ["Roadmap, visión, release, diario, iteración", "Visión, roadmap, release, iteración, diario", "Visión, release, roadmap, iteración, diario", "Release, visión, roadmap, iteración, diario"], 1, "De lo más estratégico a lo más operativo."]];
+var box=document.getElementById('mcqs'),sc=document.getElementById('sc'),tot=document.getElementById('tot');
+var ok=0,done=0;
+function render(){box.innerHTML='';ok=0;done=0;sc.textContent=0;tot.textContent=0;
+ Q.forEach(function(q,i){var d=document.createElement('div');d.className='mcq';
+  var h=document.createElement('h4');h.innerHTML='<small>Pregunta '+(i+1)+' de '+Q.length+', semana '+q[0].slice(1)+'</small>';
+  h.appendChild(document.createTextNode(q[1]));d.appendChild(h);
+  q[2].forEach(function(t,j){var b=document.createElement('button');b.type='button';b.className='opt';b.textContent=t;
+   b.onclick=function(){var bs=d.querySelectorAll('.opt');bs.forEach(function(x){x.disabled=true});
+    bs[q[3]].classList.add('right');if(j!==q[3])b.classList.add('wrong');else ok++;done++;
+    d.classList.add('answered');sc.textContent=ok;tot.textContent=done;};
+   d.appendChild(b);});
+  var w=document.createElement('p');w.className='why';w.textContent=q[4];d.appendChild(w);box.appendChild(d);});}
+render();document.getElementById('reset').onclick=function(){render();window.scrollTo(0,document.getElementById('s6').offsetTop);};
+})();
+</script>
+</body>
+</html>
